@@ -1,0 +1,10 @@
+flake8~=7.3.0
+jsonlines~=4.0.0
+matplotlib~=3.10.6
+numpy~=2.3.3
+open-spiel~=1.6.9
+ordered-set~=4.1.0
+pandas~=2.3.2
+scipy~=1.16.1
+seaborn~=0.13.2
+tqdm~=4.67.1

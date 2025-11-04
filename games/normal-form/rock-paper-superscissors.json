@@ -1,0 +1,1 @@
+{"actions": [["rock", "paper", "scissors"], ["ROCK", "PAPER", "SCISSORS"]], "utilities": [[0, -1, 1], [1, 0, -2], [-1, 2, 0]]}

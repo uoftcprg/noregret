@@ -1,0 +1,4 @@
+,Game,Type,Decision points,Sequences
+0,rock_paper_superscissors,2p0s,2,8
+1,kuhn_poker,2p0s,12,26
+2,leduc_poker,2p0s,288,674
