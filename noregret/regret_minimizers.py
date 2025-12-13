@@ -384,7 +384,7 @@ class BlumMansour(ProbabilitySimplexSwapRegretMinimizer):
                     self.previous_strategy[a] * prediction,
                 )
 
-        strategy = stationary_distribution(self.outputs.T)
+        strategy = stationary_distribution(self.outputs)
 
         self.strategies.append(strategy)
 

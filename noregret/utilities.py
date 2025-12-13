@@ -45,11 +45,7 @@ def euclidean_projection_on_probability_simplex(input_):
 
 def stationary_distribution(stochastic_matrix):
     P = stochastic_matrix
-
-    if not np.allclose(P.sum(1), 1):
-        raise ValueError('matrix not stochastic')
-
-    eigenvalues, eigenvectors = LA.eig(P.T)
+    eigenvalues, eigenvectors = LA.eig(P)
     pi = eigenvectors[:, np.isclose(eigenvalues, 1)][:, 0]
     pi /= pi.sum()
     pi = pi.real
