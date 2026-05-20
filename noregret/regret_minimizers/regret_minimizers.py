@@ -38,13 +38,18 @@ class RegretMinimizer(ABC):
     """Strategies."""
     utilities: list[Any] = field(default_factory=list)
     """Utilities."""
-    _next_strategy: Any = None
+    dimension: int = field(init=False)
+    """Dimension."""
+    _next_strategy: Any = field(default=None, init=False)
+
+    def __post_init__(self):
+        pass
 
     @property
     def next_strategy(self):
         """Return the next strategy.
 
-        :return: The next strategy.
+        :return: Next strategy.
         """
         return self._next_strategy
 

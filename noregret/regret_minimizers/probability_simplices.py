@@ -270,6 +270,8 @@ class BlumMansour(ProbabilitySimplexSwapRegretMinimizer):
     """External regret minimizeres."""
 
     def __post_init__(self):
+        super().__post_init__()
+
         n = self.dimension
         R_type = partial(self.regret_minimizer_type, self.kernel)
         self.external_regret_minimizers = tuple(map(R_type, repeat(n, n)))

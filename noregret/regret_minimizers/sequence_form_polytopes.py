@@ -4,11 +4,6 @@ from typing import Any
 
 from abc import ABC
 
-from noregret.regret_minimizers.probability_simplices import (
-    DiscountedRegretMatching,
-    RegretMatching,
-    RegretMatchingPlus,
-)
 from noregret.regret_minimizers.regret_minimizers import (
     DiscountedRegretMinimizer,
     RegretMinimizer,
@@ -73,8 +68,6 @@ class SequenceFormPolytopeRegretMinimizer(RegretMinimizer, ABC):
 @dataclass
 class CounterfactualRegretMinimization(SequenceFormPolytopeRegretMinimizer):
     """Class for counterfactual regret minimization (CFR)."""
-    regret_minimizer_type: Any = RegretMatching
-    """Regret minimizer type."""
 
     def _theta(self, m):
         np = self.kernel.numpy
@@ -111,7 +104,6 @@ class CounterfactualRegretMinimization(SequenceFormPolytopeRegretMinimizer):
 @dataclass
 class CounterfactualRegretMinimizationPlus(CounterfactualRegretMinimization):
     """Class for counterfactual regret minimization+ (CFR+)."""
-    regret_minimizer_type: Any = RegretMatchingPlus
     _: KW_ONLY
     floored_cumulative_counterfactual_regrets: Any = 0.0
     """Floored cumulative counterfactual regrets."""
@@ -156,7 +148,6 @@ class DiscountedCounterfactualRegretMinimization(
         DiscountedRegretMinimizer,
 ):
     """Class for discounted counterfactual regret minimization+ (DCFR)."""
-    regret_minimizer_type: Any = DiscountedRegretMatching
     _: KW_ONLY
     discounted_counterfactual_regrets: Any = 0.0
     """Discounted counterfactual regrets."""
