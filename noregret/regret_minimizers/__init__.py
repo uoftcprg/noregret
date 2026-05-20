@@ -19,6 +19,7 @@ from noregret.regret_minimizers.probability_simplices import (
 )
 from noregret.regret_minimizers.sequence_form_polytopes import (
     CounterfactualRegretMinimization,
+    CounterfactualRegretMinimization2,
     CounterfactualRegretMinimizationPlus,
     DiscountedCounterfactualRegretMinimization,
     SequenceFormPolytopeRegretMinimizer,
@@ -27,6 +28,7 @@ from noregret.regret_minimizers.sequence_form_polytopes import (
 __all__ = (
     'BlumMansour',
     'CounterfactualRegretMinimization',
+    'CounterfactualRegretMinimization2',
     'CounterfactualRegretMinimizationPlus',
     'DiscountedCounterfactualRegretMinimization',
     'DiscountedRegretMatching',

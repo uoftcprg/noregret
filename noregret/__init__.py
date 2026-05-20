@@ -36,6 +36,7 @@ from noregret.kernels import (
 from noregret.regret_minimizers import (
     BlumMansour,
     CounterfactualRegretMinimization,
+    CounterfactualRegretMinimization2,
     CounterfactualRegretMinimizationPlus,
     DiscountedCounterfactualRegretMinimization,
     DiscountedRegretMatching,
@@ -65,6 +66,8 @@ BM = BlumMansour
 """Alias for :class:`noregret.BlumMansour`."""
 CFR = CounterfactualRegretMinimization
 """Alias for :class:`noregret.CounterfactualRegretMinimization`."""
+CFR2 = CounterfactualRegretMinimization2
+"""Alias for :class:`noregret.CounterfactualRegretMinimization2`."""
 CFR_plus = CounterfactualRegretMinimizationPlus
 """Alias for :class:`noregret.CounterfactualRegretMinimizationPlus`."""
 DCFR = DiscountedCounterfactualRegretMinimization
@@ -117,6 +120,7 @@ __all__ = (
     'CFR_plus',
     'Chicken',
     'CounterfactualRegretMinimization',
+    'CounterfactualRegretMinimization2',
     'CounterfactualRegretMinimizationPlus',
     'CUDAKernel',
     'DCFR',

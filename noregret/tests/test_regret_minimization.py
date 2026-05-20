@@ -150,5 +150,42 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
                 self.assertEqual(v.dtype, dtype)
 
 
+class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
+    KERNEL = nr.FloatingPointKernel()
+    GAMES = (
+        nr.to_efg(nr.MatchingPennies(KERNEL)),
+        nr.to_efg(nr.RockPaperScissors(KERNEL)),
+        nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
+        nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
+        nr.from_open_spiel(KERNEL, 'kuhn_poker'),
+        nr.from_open_spiel(KERNEL, 'leduc_poker'),
+    )
+    PLACES = 6
+
+    def test_equivalence(self):
+        for game in self.GAMES:
+            assert isinstance(game, nr.EFG_2p0s)
+
+            x_bar, y_bar = nr.regret_minimization(
+                game,
+                nr.CFR(self.KERNEL, game.row_sequence_form_polytope),
+                nr.CFR(self.KERNEL, game.column_sequence_form_polytope),
+                progress_bar=False,
+            )
+            e = game.exploitability(x_bar, y_bar)
+            v = game.expected_row_utility(x_bar, y_bar)
+            x_bar2, y_bar2 = nr.regret_minimization(
+                game,
+                nr.CFR2(self.KERNEL, game.row_sequence_form_polytope),
+                nr.CFR2(self.KERNEL, game.column_sequence_form_polytope),
+                progress_bar=False,
+            )
+            e2 = game.exploitability(x_bar2, y_bar2)
+            v2 = game.expected_row_utility(x_bar2, y_bar2)
+
+            self.assertAlmostEqual(e, e2, self.PLACES)
+            self.assertAlmostEqual(v, v2, self.PLACES)
+
+
 if __name__ == '__main__':
     main()  # pragma: no cover

@@ -4,10 +4,15 @@ from typing import Any
 
 from abc import ABC
 
+from noregret.regret_minimizers.probability_simplices import (
+    ProbabilitySimplexRegretMinimizer,
+    RegretMatching,
+)
 from noregret.regret_minimizers.regret_minimizers import (
     DiscountedRegretMinimizer,
     RegretMinimizer,
 )
+from noregret.sequence_form_polytopes import SequenceFormPolytope
 
 
 @dataclass
@@ -15,7 +20,7 @@ class SequenceFormPolytopeRegretMinimizer(RegretMinimizer, ABC):
     """Abstract base class for regret minimizers operating over
     sequence-form polytopes.
     """
-    sequence_form_polytope: Any
+    sequence_form_polytope: SequenceFormPolytope
     """Sequence-form polytope."""
     _: KW_ONLY
     previous_behavioral_strategy: Any = 0.0
@@ -92,11 +97,9 @@ class CounterfactualRegretMinimization(SequenceFormPolytopeRegretMinimizer):
 
     def output(self, prediction=False):
         theta = self._theta(prediction)
-        normalize = self.sequence_form_polytope.normalize
-        self.next_behavioral_strategy = normalize(theta)
-        self.next_strategy = self.sequence_form_polytope.to_sequence_form(
-            self.next_behavioral_strategy,
-        )
+        b = self.sequence_form_polytope.normalize(theta)
+        self.next_behavioral_strategy = b
+        self.next_strategy = self.sequence_form_polytope.to_sequence_form(b)
 
         return self.next_strategy
 
@@ -186,3 +189,98 @@ class DiscountedCounterfactualRegretMinimization(
         T = self.iteration_count
         r[r > 0] *= T ** self.alpha / (T ** self.alpha + 1)
         r[r < 0] *= T ** self.beta / (T ** self.beta + 1)
+
+
+@dataclass
+class CounterfactualRegretMinimization2(SequenceFormPolytopeRegretMinimizer):
+    """Class for counterfactual regret minimization (CFR).
+
+    This is an alternative to :class:`CounterfactualRegretMinimization`.
+
+    Do **not** use this class unless it is absolutely necessary.
+
+    Main advantage: Arbitrary local regret minimizers.
+
+    Main disadvantage: **Slow** and unparallelizable.
+    """
+    regret_minimizer_type: type[ProbabilitySimplexRegretMinimizer] = (
+        RegretMatching
+    )
+    """Regret minimizer type."""
+    _: KW_ONLY
+    regret_minimizers: dict[str, ProbabilitySimplexRegretMinimizer] = field(
+        default_factory=dict,
+        init=False,
+    )
+    """Regret minimizers."""
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        R_type = self.regret_minimizer_type
+        A = self.sequence_form_polytope.actions
+        J = self.sequence_form_polytope.decision_points
+
+        for j in J:
+            self.regret_minimizers[j] = R_type(self.kernel, len(A[j]))
+
+    def output(self, prediction=False):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        A = self.sequence_form_polytope.actions
+        J = self.sequence_form_polytope.decision_points
+        Sigma_plus = self.sequence_form_polytope.non_empty_sequences
+
+        if prediction is False or prediction is True:
+            predictions = {j: prediction for j in J}
+        else:
+            predictions = {}
+            m = self.sequence_form_polytope.counterfactual_utilities(
+                prediction,
+            )
+
+            for j in J:
+                m_j = []
+
+                for a in A[j]:
+                    m_j.append(m[Sigma_plus.index((j, a))])
+
+                predictions[j] = np.array(m_j, dtype)
+
+        b = np.empty(len(Sigma_plus), dtype)
+
+        for j, R in self.regret_minimizers.items():
+            x = R.output(predictions[j])
+
+            for a, p in zip(A[j], x):
+                b[Sigma_plus.index((j, a))] = p
+
+        self.next_behavioral_strategy = b
+        self.next_strategy = self.sequence_form_polytope.to_sequence_form(b)
+
+        return self.next_strategy
+
+    def observe(self, utility):
+        super().observe(utility)
+
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        A = self.sequence_form_polytope.actions
+        J = self.sequence_form_polytope.decision_points
+        Sigma_plus = self.sequence_form_polytope.non_empty_sequences
+        u = self.sequence_form_polytope.counterfactual_utilities(
+            self.previous_behavioral_strategy,
+            utility,
+        )
+        counterfactual_utilities = {}
+
+        for j in J:
+            u_j = []
+
+            for a in A[j]:
+                u_j.append(u[Sigma_plus.index((j, a))])
+
+            counterfactual_utilities[j] = np.array(u_j, dtype)
+
+        for j, R in self.regret_minimizers.items():
+            R.observe(counterfactual_utilities[j])
