@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='noregret',
-    version='0.0.0.dev3',
+    version='0.0.0.dev4',
     description='No-regret learning dynamics',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -44,9 +44,15 @@ setup(
     },
     packages=find_packages(),
     install_requires=[
-        'numpy>=2.3.3,<3',
+        'cupy-cuda13x[ctk]>=14.0.1,<15',
+        'gurobipy~=13.0.2,<14',
+        'numpy>=2.4.4,<3',
+        'open-spiel>=1.6.14,<2',
         'ordered-set>=4.1.0,<5',
-        'scipy>=1.16.1,<2',
+        'orjson>=3.11.9,<4',
+        'scipy>=1.17.1,<2',
+        'tqdm>=4.67.3,<5',
     ],
-    python_requires='>=3.11',
+    python_requires='>=3.12',
+    package_data={'noregret': ['**/*.json']},
 )

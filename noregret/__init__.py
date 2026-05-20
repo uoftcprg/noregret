@@ -1,0 +1,188 @@
+"""Module for ``noregret''."""
+from noregret.games import (
+    AssuranceGame,
+    BattleOfTheSexes,
+    Chicken,
+    ExtensiveFormGame,
+    from_open_spiel,
+    Game,
+    GiftExchangeGame,
+    MatchingPennies,
+    MultilinearGame,
+    NormalFormGame,
+    PrisonersDilemma,
+    PureCoordination,
+    RockPaperScissors,
+    RockPaperScissorsPlus,
+    RockPaperSuperscissors,
+    StagHunt,
+    to_extensive_form,
+    TwoPlayerExtensiveFormGame,
+    TwoPlayerGame,
+    TwoPlayerMultilinearGame,
+    TwoPlayerNormalFormGame,
+    TwoPlayerZeroSumExtensiveFormGame,
+    TwoPlayerZeroSumGame,
+    TwoPlayerZeroSumMultilinearGame,
+    TwoPlayerZeroSumNormalFormGame,
+)
+from noregret.kernels import (
+    CUDAKernel,
+    FloatingPointKernel,
+    ImportedKernel,
+    Kernel,
+    Serializable,
+)
+from noregret.regret_minimizers import (
+    BlumMansour,
+    CounterfactualRegretMinimization,
+    CounterfactualRegretMinimizationPlus,
+    DiscountedCounterfactualRegretMinimization,
+    DiscountedRegretMatching,
+    DiscountedRegretMinimizer,
+    EuclideanRegularization,
+    FollowTheRegularizedLeader,
+    MirrorDescent,
+    MultiplicativeWeightsUpdate,
+    OnlineGradientDescent,
+    ProbabilitySimplexRegretMinimizer,
+    ProbabilitySimplexSwapRegretMinimizer,
+    RegretMatching,
+    RegretMatchingPlus,
+    RegretMinimizer,
+    SequenceFormPolytopeRegretMinimizer,
+    SwapRegretMinimizer,
+)
+from noregret.sequence_form_polytopes import SequenceFormPolytope
+from noregret.solvers import (
+    linear_programming,
+    regret_minimization,
+    symmetric_regret_minimization,
+)
+from noregret.utilities import import_object, tuple_or_none
+
+BM = BlumMansour
+"""Alias for :class:`noregret.BlumMansour`."""
+CFR = CounterfactualRegretMinimization
+"""Alias for :class:`noregret.CounterfactualRegretMinimization`."""
+CFR_plus = CounterfactualRegretMinimizationPlus
+"""Alias for :class:`noregret.CounterfactualRegretMinimizationPlus`."""
+DCFR = DiscountedCounterfactualRegretMinimization
+"""Alias for
+:class:`noregret.DiscountedCounterfactualRegretMinimization`.
+"""
+DRM = DiscountedRegretMatching
+"""Alias for :class:`noregret.DiscountedRegretMatching`."""
+EFG_2p0s = TwoPlayerZeroSumExtensiveFormGame
+"""Alias for :class:`noregret.TwoPlayerZeroSumExtensiveFormGame`."""
+EFG_2p = TwoPlayerExtensiveFormGame
+"""Alias for :class:`noregret.TwoPlayerExtensiveFormGame`."""
+EFG = ExtensiveFormGame
+"""Alias for :class:`noregret.ExtensiveFormGame`."""
+ER = EuclideanRegularization
+"""Alias for :class:`noregret.EuclideanRegularization`."""
+FTRL = FollowTheRegularizedLeader
+"""Alias for :class:`noregret.FollowTheRegularizedLeader`."""
+lp = linear_programming
+"""Alias for :func:`noregret.linear_programming`."""
+MD = MirrorDescent
+"""Alias for :class:`noregret.MirrorDescent`."""
+MWU = MultiplicativeWeightsUpdate
+"""Alias for :class:`noregret.MultiplicativeWeightsUpdate`."""
+NFG_2p0s = TwoPlayerZeroSumNormalFormGame
+"""Alias for :class:`noregret.TwoPlayerZeroSumNormalFormGame`."""
+NFG_2p = TwoPlayerNormalFormGame
+"""Alias for :class:`noregret.TwoPlayerNormalFormGame`."""
+NFG = NormalFormGame
+"""Alias for :class:`noregret.NormalFormGame`."""
+OGD = OnlineGradientDescent
+"""Alias for :class:`noregret.OnlineGradientDescent`."""
+RM_plus = RegretMatchingPlus
+"""Alias for :class:`noregret.RegretMatchingPlus`."""
+RM = RegretMatching
+"""Alias for :class:`noregret.RegretMatching`."""
+rm = regret_minimization
+"""Alias for :func:`noregret.regret_minimization`."""
+symmetric_rm = symmetric_regret_minimization
+"""Alias for :func:`noregret.symmetric_regret_minimization`."""
+to_efg = to_extensive_form
+"""Alias for :func:`noregret.to_extensive_form`."""
+
+__all__ = (
+    'AssuranceGame',
+    'BattleOfTheSexes',
+    'BlumMansour',
+    'BM',
+    'CFR',
+    'CFR_plus',
+    'Chicken',
+    'CounterfactualRegretMinimization',
+    'CounterfactualRegretMinimizationPlus',
+    'CUDAKernel',
+    'DCFR',
+    'DiscountedCounterfactualRegretMinimization',
+    'DiscountedRegretMatching',
+    'DiscountedRegretMinimizer',
+    'DRM',
+    'EFG',
+    'EFG_2p',
+    'EFG_2p0s',
+    'ER',
+    'EuclideanRegularization',
+    'ExtensiveFormGame',
+    'FloatingPointKernel',
+    'FollowTheRegularizedLeader',
+    'from_open_spiel',
+    'FTRL',
+    'Game',
+    'GiftExchangeGame',
+    'ImportedKernel',
+    'import_object',
+    'Kernel',
+    'linear_programming',
+    'lp',
+    'MatchingPennies',
+    'MD',
+    'MirrorDescent',
+    'MultilinearGame',
+    'MultiplicativeWeightsUpdate',
+    'MWU',
+    'NFG',
+    'NFG_2p',
+    'NFG_2p0s',
+    'NormalFormGame',
+    'OGD',
+    'OnlineGradientDescent',
+    'PrisonersDilemma',
+    'ProbabilitySimplexRegretMinimizer',
+    'ProbabilitySimplexSwapRegretMinimizer',
+    'PureCoordination',
+    'RegretMatching',
+    'RegretMatchingPlus',
+    'regret_minimization',
+    'RegretMinimizer',
+    'rm',
+    'RM',
+    'RM_plus',
+    'RockPaperScissors',
+    'RockPaperScissorsPlus',
+    'RockPaperSuperscissors',
+    'SequenceFormPolytope',
+    'SequenceFormPolytopeRegretMinimizer',
+    'Serializable',
+    'StagHunt',
+    'SwapRegretMinimizer',
+    'symmetric_regret_minimization',
+    'symmetric_rm',
+    'to_efg',
+    'to_extensive_form',
+    'tuple_or_none',
+    'TwoPlayerExtensiveFormGame',
+    'TwoPlayerGame',
+    'TwoPlayerMultilinearGame',
+    'TwoPlayerNormalFormGame',
+    'TwoPlayerZeroSumExtensiveFormGame',
+    'TwoPlayerZeroSumGame',
+    'TwoPlayerZeroSumMultilinearGame',
+    'TwoPlayerZeroSumNormalFormGame',
+)
