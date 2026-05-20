@@ -6,8 +6,8 @@ setup(
     name='noregret',
     version='0.0.0.dev4',
     description='No-regret learning dynamics',
-    long_description=open('README.md').read(),
-    long_description_content_type='text/markdown',
+    long_description=open('README.rst').read(),
+    long_description_content_type='text/x-rst',
     url='https://github.com/uoftcprg/noregret',
     author=(
         'Universal, Open, Free, and Transparent Computer Poker Research Group'
