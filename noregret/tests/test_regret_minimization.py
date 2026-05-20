@@ -6,16 +6,13 @@ import noregret as nr
 
 
 class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
-    KERNEL = nr.FloatingPointKernel()
+    KERNEL = nr.FloatingPointKernel('single')
     SYMMETRIC_GAME_VALUES = (
         (nr.RockPaperScissors(KERNEL), 0),
         (nr.RockPaperScissorsPlus(KERNEL), 0),
         (nr.RockPaperSuperscissors(KERNEL), 0),
     )
-    GAME_VALUES = (
-        *SYMMETRIC_GAME_VALUES,
-        (nr.MatchingPennies(KERNEL), 0),
-    )
+    GAME_VALUES = *SYMMETRIC_GAME_VALUES, (nr.MatchingPennies(KERNEL), 0)
     REGRET_MINIMIZER_TYPES = (
         partial(nr.MWU, learning_rate=1e-3),
         partial(nr.ER, learning_rate=1e-3),
@@ -29,6 +26,8 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
     DELTA = 2 * TARGET_EXPLOITABILITY
 
     def test_average_iterate_convergence(self):
+        dtype = self.KERNEL.data_type
+
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.NFG_2p0s)
 
@@ -50,8 +49,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
 
                         self.assertLess(e, self.TARGET_EXPLOITABILITY)
                         self.assertAlmostEqual(v, value, delta=self.DELTA)
+                        self.assertEqual(e.dtype, dtype)
+                        self.assertEqual(v.dtype, dtype)
 
     def test_last_iterate_convergence(self):
+        dtype = self.KERNEL.data_type
+
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.NFG_2p0s)
 
@@ -72,8 +75,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
 
                     self.assertLess(e, self.TARGET_EXPLOITABILITY)
                     self.assertAlmostEqual(v, value, delta=self.DELTA)
+                    self.assertEqual(e.dtype, dtype)
+                    self.assertEqual(v.dtype, dtype)
 
     def test_frequent_iterate_convergence(self):
+        dtype = self.KERNEL.data_type
+
         for game, value in self.SYMMETRIC_GAME_VALUES:
             assert game.is_symmetric()
             assert isinstance(game, nr.NFG_2p0s)
@@ -92,10 +99,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
 
                 self.assertLess(e, self.TARGET_EXPLOITABILITY)
                 self.assertAlmostEqual(v, value, delta=self.DELTA)
+                self.assertEqual(e.dtype, dtype)
+                self.assertEqual(v.dtype, dtype)
 
 
 class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
-    KERNEL = nr.FloatingPointKernel()
+    KERNEL = nr.FloatingPointKernel('single')
     GAME_VALUES = (
         (nr.to_efg(nr.MatchingPennies(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperScissors(KERNEL)), 0),
@@ -116,6 +125,8 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
     DELTA = 2 * TARGET_EXPLOITABILITY
 
     def test_convergence(self):
+        dtype = self.KERNEL.data_type
+
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.EFG_2p0s)
 
@@ -135,6 +146,8 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
 
                 self.assertLess(e, self.TARGET_EXPLOITABILITY)
                 self.assertAlmostEqual(v, value, delta=self.DELTA)
+                self.assertEqual(e.dtype, dtype)
+                self.assertEqual(v.dtype, dtype)
 
 
 if __name__ == '__main__':

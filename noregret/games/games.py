@@ -243,11 +243,12 @@ class TwoPlayerZeroSumGame(TwoPlayerGame, ABC):
         return u, -v
 
     def _assert_nash_gap(self, x, y, u, neg_v):
+        np = self.kernel.numpy
         u2 = self.expected_row_utility(x, y)
 
         return (
-            (neg_v < u2 or self.kernel.numpy.isclose(neg_v, u2))
-            and (u2 < u or self.kernel.numpy.isclose(u2, u))
+            (neg_v < u2 or np.isclose(neg_v, u2))
+            and (u2 < u or np.isclose(u2, u))
         )
 
     def nash_gap(self, row_strategy, column_strategy):

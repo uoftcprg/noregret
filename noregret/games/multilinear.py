@@ -101,12 +101,11 @@ class TwoPlayerMultilinearGame(TwoPlayerGame, MultilinearGame, ABC):
         return self.payoffs[1]
 
     def is_symmetric(self):
+        np = self.kernel.numpy
+
         return (
             self.row_dimension == self.column_dimension
-            and self.kernel.numpy.allclose(
-                self.row_payoffs,
-                self.column_payoffs.T,
-            )
+            and np.allclose(self.row_payoffs, self.column_payoffs.T)
         )
 
     def row_utility(self, column_strategy):

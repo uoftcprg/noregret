@@ -62,6 +62,9 @@ class FollowTheRegularizedLeader(ProbabilitySimplexRegretMinimizer, ABC):
     """Learning rate."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.cumulative_utility
         else:
@@ -70,8 +73,8 @@ class FollowTheRegularizedLeader(ProbabilitySimplexRegretMinimizer, ABC):
 
             theta = m + self.cumulative_utility
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension, theta, dtype)
 
         return theta
 
@@ -81,8 +84,9 @@ class MultiplicativeWeightsUpdate(FollowTheRegularizedLeader):
     """Class for multiplicative weights update (MWU)."""
 
     def output(self, prediction=False):
+        scipy = self.kernel.scipy
         theta = self._theta(prediction)
-        sigma = self.kernel.scipy.special.softmax
+        sigma = scipy.special.softmax
         self.next_strategy = sigma(self.learning_rate * theta)
 
         return self.next_strategy
@@ -112,13 +116,16 @@ class OnlineGradientDescent(MirrorDescent):
     """Online gradient descent (OGD)."""
 
     def output(self, prediction=False):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if prediction is False or prediction is True:
             theta = self.previous_utility
         else:
             theta = prediction
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension, theta, dtype)
 
         pi = self.kernel.euclidean_projection_on_probability_simplex
         lr = self.learning_rate
@@ -132,26 +139,31 @@ class RegretMatching(ProbabilitySimplexRegretMinimizer):
     """Class for regret matching (RM)."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.cumulative_regrets
         else:
             if m is True:
                 m = self.previous_utility
 
-            r = m - self.kernel.numpy.dot(m, self.previous_strategy)
+            r = m - np.dot(m, self.previous_strategy)
             theta = r + self.cumulative_regrets
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension, theta, dtype)
 
         return theta.clip(0)
 
     def output(self, prediction=False):
-        theta = self._theta(prediction)
         np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        theta = self._theta(prediction)
 
         if np.allclose(theta, 0):
-            self.next_strategy = np.full(self.dimension, 1 / self.dimension)
+            n = self.dimension
+            self.next_strategy = np.full(n, 1 / n, dtype)
         else:
             self.next_strategy = theta / theta.sum()
 
@@ -166,21 +178,24 @@ class RegretMatchingPlus(RegretMatching):
     """Floored cumulative regrets."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.floored_cumulative_regrets
         else:
             if m is True:
                 m = self.previous_utility
 
-            if self.kernel.numpy.isscalar(m):
-                m = self.kernel.numpy.full(self.dimension, m)
+            if np.isscalar(m):
+                m = np.full(self.dimension, m, dtype)
 
-            r = m - self.kernel.numpy.dot(m, self.previous_strategy)
+            r = m - np.dot(m, self.previous_strategy)
             theta = r + self.floored_cumulative_regrets
             theta = theta.clip(0)
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension, theta, dtype)
 
         return theta
 
@@ -201,23 +216,26 @@ class DiscountedRegretMatching(RegretMatching, DiscountedRegretMinimizer):
     """Discounted regrets."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.discounted_regrets
         else:
             if m is True:
                 m = self.previous_utility
 
-            if self.kernel.numpy.isscalar(m):
-                m = self.kernel.numpy.full(self.dimension, m)
+            if np.isscalar(m):
+                m = np.full(self.dimension, m, dtype)
 
-            r = m - self.kernel.numpy.dot(m, self.previous_strategy)
+            r = m - np.dot(m, self.previous_strategy)
             theta = r + self.discounted_regrets
             T = self.iteration_count + 1
             theta[theta > 0] *= T ** self.alpha / (T ** self.alpha + 1)
             theta[theta < 0] *= T ** self.beta / (T ** self.beta + 1)
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension, theta, dtype)
 
         return theta.clip(0)
 
@@ -257,11 +275,14 @@ class BlumMansour(ProbabilitySimplexSwapRegretMinimizer):
         self.external_regret_minimizers = tuple(map(R_type, repeat(n, n)))
 
     def output(self, prediction=False):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if prediction is not False:
             raise NotImplementedError
 
-        np = self.kernel.numpy
-        M = np.full((self.dimension, self.dimension), 1 / self.dimension)
+        n = self.dimension
+        M = np.full((n, n), 1 / n, dtype)
 
         for a, R in enumerate(self.external_regret_minimizers):
             M[:, a] = R.output()

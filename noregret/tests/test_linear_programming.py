@@ -19,11 +19,17 @@ class LinearProgrammingTestCase(TestCase):
     )
 
     def test_linear_programming(self):
+        dtype = self.KERNEL.data_type
+
         for game, value in self.GAME_VALUES:
             x, y = nr.linear_programming(game)
+            e = game.exploitability(x, y)
+            v = game.expected_row_utility(x, y)
 
-            self.assertAlmostEqual(game.exploitability(x, y), 0)
-            self.assertAlmostEqual(game.expected_row_utility(x, y), value)
+            self.assertAlmostEqual(e, 0)
+            self.assertAlmostEqual(v, value)
+            self.assertEqual(e.dtype, dtype)
+            self.assertEqual(v.dtype, dtype)
 
 
 if __name__ == '__main__':

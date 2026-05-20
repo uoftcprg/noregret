@@ -8,6 +8,8 @@ from noregret.games.normal_form.games import TwoPlayerZeroSumNormalFormGame
 
 
 def _lp_2p0s_nfg(game, parameters):
+    np = game.kernel.numpy
+    dtype = game.kernel.data_type
     A = game.payoffs
 
     with Env(params=parameters) as env:
@@ -20,7 +22,7 @@ def _lp_2p0s_nfg(game, parameters):
         m.addConstr(x @ A >= u)
         m.optimize()
 
-        x = x.X
+        x = np.array(x.X, dtype)
 
         m = Model(env=env)
         y = m.addMVar(shape=A.shape[1], name='y')
@@ -31,12 +33,14 @@ def _lp_2p0s_nfg(game, parameters):
         m.addConstr(A @ y <= v)
         m.optimize()
 
-        y = y.X
+        y = np.array(y.X, dtype)
 
     return x, y
 
 
 def _lp_2p0s_efg(game, parameters):
+    np = game.kernel.numpy
+    dtype = game.kernel.data_type
     A = game.payoffs
     F = game.row_sequence_form_polytope.constraint_matrix
     f = game.row_sequence_form_polytope.constraint_vector
@@ -53,7 +57,7 @@ def _lp_2p0s_efg(game, parameters):
         m.addConstr(x @ A >= u @ G)
         m.optimize()
 
-        x = x.X
+        x = np.array(x.X, dtype)
 
         m = Model(env=env)
         y = m.addMVar(shape=A.shape[1], name='y')
@@ -64,7 +68,7 @@ def _lp_2p0s_efg(game, parameters):
         m.addConstr(A @ y <= v @ F)
         m.optimize()
 
-        y = y.X
+        y = np.array(y.X, dtype)
 
     return x, y
 

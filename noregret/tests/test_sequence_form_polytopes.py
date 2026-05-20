@@ -4,16 +4,8 @@ import noregret as nr
 
 
 class SequenceFormPolytopeTestCase(TestCase):
-    KERNELS = (
-        nr.FloatingPointKernel(),
-        nr.CUDAKernel(),
-    )
-    ACTIONS = {
-        'a': ['b', 'c'],
-        'd': ['e'],
-        'f': ['g', 'h'],
-        'i': ['j', 'k'],
-    }
+    KERNELS = nr.FloatingPointKernel(), nr.CUDAKernel()
+    ACTIONS = {'a': ['b', 'c'], 'd': ['e'], 'f': ['g', 'h'], 'i': ['j', 'k']}
     PARENT_SEQUENCES = {
         'a': None,
         'd': ('a', 'b'),
@@ -23,12 +15,12 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_behavioral_form_uniform_strategy(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
 
             np.testing.assert_array_almost_equal(
                 sfp.behavioral_form_uniform_strategy,
@@ -37,32 +29,37 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_to_sequence_form(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
 
             np.testing.assert_array_almost_equal(
                 sfp.to_sequence_form(sfp.behavioral_form_uniform_strategy),
                 [1, 0.5, 0.5, 0.5, 0.25, 0.25, 0.125, 0.125],
             )
+
+            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5], dtype)
+
             np.testing.assert_array_almost_equal(
-                sfp.to_sequence_form(np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5])),
+                sfp.to_sequence_form(b),
                 [1, 0, 1, 0, 0.3, 0.7, 0.35, 0.35],
             )
 
     def test_counterfactual_utilities(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
-            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5])
-            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3])
+            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5], dtype)
+            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.counterfactual_utilities(b, u),
@@ -71,14 +68,15 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_counterfactual_regrets(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
-            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5])
-            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3])
+            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5], dtype)
+            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.counterfactual_regrets(b, u),
@@ -87,15 +85,16 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_normalize(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
-            v1 = np.array(np.ones(7))
-            v2 = np.array(np.zeros(7))
-            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5])
+            v1 = np.ones(7, dtype)
+            v2 = np.zeros(7, dtype)
+            b = np.array([0, 1, 1, 0.3, 0.7, 0.5, 0.5], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.normalize(v1),
@@ -109,20 +108,21 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_best_response_value(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
-            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3])
+            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.best_response_value(u),
                 4.5,
             )
 
-            u = np.array([-0.5, -1, -2, 0, 0, 0, 0, 0])
+            u = np.array([-0.5, -1, -2, 0, 0, 0, 0, 0], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.best_response_value(u),
@@ -131,20 +131,21 @@ class SequenceFormPolytopeTestCase(TestCase):
 
     def test_worst_response_value(self):
         for kernel in self.KERNELS:
+            np = kernel.numpy
+            dtype = kernel.data_type
             sfp = nr.SequenceFormPolytope(
                 kernel,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
-            np = kernel.numpy
-            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3])
+            u = np.array([0.5, 0, 0, 0, 2, 1, 0, 3], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.worst_response_value(u),
                 0.5,
             )
 
-            u = np.array([0.5, 1, 2, 0, 0, 0, 0, 0])
+            u = np.array([0.5, 1, 2, 0, 0, 0, 0, 0], dtype)
 
             np.testing.assert_array_almost_equal(
                 sfp.worst_response_value(u),

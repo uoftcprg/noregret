@@ -40,9 +40,10 @@ class NormalFormGame(MultilinearGame, Serializable):
 
     @classmethod
     def loads(cls, kernel, raw_data):
-        data = loads(raw_data)
         np = kernel.numpy
-        payoffs = np.ascontiguousarray(np.array(data['payoffs']))
+        data = loads(raw_data)
+        dtype = kernel.data_type
+        payoffs = np.ascontiguousarray(np.array(data['payoffs'], dtype))
         actions = tuple(map(OrderedSet, data['actions']))
 
         return cls(kernel, payoffs, actions)

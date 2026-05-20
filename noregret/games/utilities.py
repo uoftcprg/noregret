@@ -20,6 +20,11 @@ from noregret.sequence_form_polytopes import SequenceFormPolytope
 
 
 def _nfg2efg(game, decision_points):
+    kernel = game.kernel
+    np = kernel.numpy
+    scipy = kernel.scipy
+    dtype = kernel.data_type
+
     if isinstance(game, TwoPlayerZeroSumNormalFormGame):
         type_ = TwoPlayerZeroSumExtensiveFormGame
     elif isinstance(game, TwoPlayerNormalFormGame):
@@ -27,28 +32,27 @@ def _nfg2efg(game, decision_points):
     else:
         type_ = ExtensiveFormGame
 
-    ker = game.kernel
     d = game.dimensions
 
     if isinstance(game, TwoPlayerZeroSumNormalFormGame):
-        payoffs = ker.numpy.zeros(tuple(n + 1 for n in d))
+        payoffs = np.zeros(tuple(n + 1 for n in d), dtype)
         payoffs[tuple(slice(1, None) for _ in d)] = game.payoffs
     else:
-        payoffs = ker.numpy.zeros((game.player_count, *(n + 1 for n in d)))
+        payoffs = np.zeros((game.player_count, *(n + 1 for n in d)), dtype)
         payoffs[:, *(slice(1, None) for _ in d)] = game.payoffs
 
-    payoffs = ker.scipy.sparse.csr_array(payoffs)
+    payoffs = scipy.sparse.csr_array(payoffs)
     sequence_form_polytopes = []
 
     for i, A_j in enumerate(game.actions):
         j = decision_points(i)
-        sequence_form_polytope = SequenceFormPolytope(ker, {j: A_j}, {j: None})
+        sfp = SequenceFormPolytope(kernel, {j: A_j}, {j: None})
 
-        sequence_form_polytopes.append(sequence_form_polytope)
+        sequence_form_polytopes.append(sfp)
 
     sequence_form_polytopes = tuple(sequence_form_polytopes)
 
-    return type_(ker, payoffs, sequence_form_polytopes)
+    return type_(kernel, payoffs, sequence_form_polytopes)
 
 
 def to_extensive_form(game, decision_points=str):
@@ -73,6 +77,8 @@ def from_open_spiel(kernel, game):
     :param game: Game in OpenSpiel.
     :return: Game.
     """
+    dtype = kernel.data_type
+    scipy = kernel.scipy
     game = load_game(game)
     player_count = game.num_players()
     actions = [defaultdict(OrderedSet) for _ in range(player_count)]
@@ -118,7 +124,7 @@ def from_open_spiel(kernel, game):
             and game.get_type().utility == GameType.Utility.ZERO_SUM
     ):
         type_ = TwoPlayerZeroSumExtensiveFormGame
-        payoffs = lil_array(dimensions)
+        payoffs = lil_array(dimensions, dtype=dtype)
 
         for sequences, payoff in raw_payoffs[0].items():
             indices = []
@@ -128,7 +134,7 @@ def from_open_spiel(kernel, game):
 
             payoffs[tuple(indices)] = payoff
 
-        payoffs = kernel.scipy.sparse.csr_array(payoffs)
+        payoffs = scipy.sparse.csr_array(payoffs)
     else:
         raise NotImplementedError
 

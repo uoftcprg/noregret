@@ -3,7 +3,6 @@ from collections.abc import Iterable, Mapping
 from itertools import count
 
 from tqdm import tqdm
-import numpy as np
 
 
 def regret_minimization(
@@ -30,6 +29,7 @@ def regret_minimization(
     :param progress_bar: Whether to show a progress bar.
     :return: Average strategy profile.
     """
+    np = game.kernel.numpy
 
     def average_strategy_profile():
         average_strategy_profile = []
@@ -108,6 +108,8 @@ def symmetric_regret_minimization(
     :param progress_bar: Whether to show a progress bar.
     :return: Average strategy profile.
     """
+    np = game.kernel.numpy
+
     if not game.is_symmetric():
         raise ValueError('game is asymmetric')
 

@@ -77,6 +77,9 @@ class CounterfactualRegretMinimization(SequenceFormPolytopeRegretMinimizer):
     """Regret minimizer type."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.cumulative_counterfactual_regrets
         else:
@@ -89,8 +92,8 @@ class CounterfactualRegretMinimization(SequenceFormPolytopeRegretMinimizer):
             )
             theta = r + self.cumulative_counterfactual_regrets
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension - 1, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension - 1, theta, dtype)
 
         return theta.clip(0)
 
@@ -115,6 +118,9 @@ class CounterfactualRegretMinimizationPlus(CounterfactualRegretMinimization):
     gamma: int = 1
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.floored_cumulative_counterfactual_regrets
         else:
@@ -128,8 +134,8 @@ class CounterfactualRegretMinimizationPlus(CounterfactualRegretMinimization):
             theta = r + self.floored_cumulative_counterfactual_regrets
             theta = theta.clip(0)
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension - 1, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension - 1, theta, dtype)
 
         return theta
 
@@ -156,6 +162,9 @@ class DiscountedCounterfactualRegretMinimization(
     """Discounted counterfactual regrets."""
 
     def _theta(self, m):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
         if m is False:
             theta = self.discounted_counterfactual_regrets
         else:
@@ -171,8 +180,8 @@ class DiscountedCounterfactualRegretMinimization(
             theta[theta > 0] *= T ** self.alpha / (T ** self.alpha + 1)
             theta[theta < 0] *= T ** self.beta / (T ** self.beta + 1)
 
-        if self.kernel.numpy.isscalar(theta):
-            theta = self.kernel.numpy.full(self.dimension - 1, theta)
+        if np.isscalar(theta):
+            theta = np.full(self.dimension - 1, theta, dtype)
 
         return theta.clip(0)
 

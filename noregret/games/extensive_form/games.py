@@ -40,6 +40,7 @@ class ExtensiveFormGame(MultilinearGame, Serializable):
 
     @classmethod
     def loads(cls, kernel, raw_data):
+        scipy = kernel.scipy
 
         def sfp(raw_sfp):
             actions = raw_sfp['actions']
@@ -55,7 +56,8 @@ class ExtensiveFormGame(MultilinearGame, Serializable):
 
         data = loads(raw_data)
         io = BytesIO(bytes.fromhex(data['payoffs']))
-        payoffs = kernel.scipy.sparse.csr_array(load_npz(io))
+        dtype = kernel.data_type
+        payoffs = scipy.sparse.csr_array(load_npz(io), dtype=dtype)
         sfps = tuple(map(sfp, data['sequence_form_polytopes']))
 
         return cls(kernel, payoffs, sfps)

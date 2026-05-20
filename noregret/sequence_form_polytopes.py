@@ -41,13 +41,16 @@ class SequenceFormPolytope:
     _L_C_B2: list[Any] = field(default_factory=list, init=False)
 
     def __post_init__(self):
+        np = self.kernel.numpy
+        scipy = self.kernel.scipy
+        dtype = self.kernel.data_type
+        itype = self.kernel.index_type
+
         if self.decision_points != self.parent_sequences.keys():
             raise ValueError('inconsistent decision points')
 
-        np = self.kernel.numpy
-        scipy = self.kernel.scipy
-        A = lil_array((self.row_count, self.column_count))
-        B = lil_array((self.row_count, self.column_count))
+        A = lil_array((self.row_count, self.column_count), dtype=dtype)
+        B = lil_array((self.row_count, self.column_count), dtype=dtype)
         A[0, 0] = 1
 
         for j in self.decision_points:
@@ -71,8 +74,8 @@ class SequenceFormPolytope:
             R.append(self.row(j))
             C.append(self.column((j, a)))
 
-        self._R = np.array(R)
-        self._C = np.array(C)
+        self._R = np.array(R, itype)
+        self._C = np.array(C, itype)
         children = defaultdict(list)
 
         for j, p_j in self.parent_sequences.items():
@@ -101,10 +104,10 @@ class SequenceFormPolytope:
 
             J = J_prime
 
-            self._L_R.append(np.array(L_R))
-            self._L_C_A.append(np.array(L_C_A))
-            self._L_C_B.append(np.array(L_C_B))
-            self._L_C_B2.append(np.array(L_C_B2))
+            self._L_R.append(np.array(L_R, itype))
+            self._L_C_A.append(np.array(L_C_A, itype))
+            self._L_C_B.append(np.array(L_C_B, itype))
+            self._L_C_B2.append(np.array(L_C_B2, itype))
 
         for L_R, L_C_B in zip(self._L_R, self._L_C_B2):
             self._L_A.append(self._A[L_R])
@@ -190,10 +193,12 @@ class SequenceFormPolytope:
         :param behavioral_strategy: Strategy in behavioral form.
         :return: Strategy in sequence form.
         """
+        np = self.kernel.numpy
+
         if behavioral_strategy.shape != (len(self.non_empty_sequences),):
             raise ValueError('invalid strategy shape')
 
-        strategy = self.kernel.numpy.r_[1, behavioral_strategy]
+        strategy = np.r_[1, behavioral_strategy]
 
         for L_C_A, L_C_B in zip(self._L_C_A, self._L_C_B):
             strategy[L_C_A] *= strategy[L_C_B]
@@ -250,9 +255,10 @@ class SequenceFormPolytope:
         :return: Counterfactual regrets.
         """
         np = self.kernel.numpy
+        dtype = self.kernel.data_type
 
         if np.isscalar(utility):
-            r = np.zeros(len(self.non_empty_sequences))
+            r = np.zeros(len(self.non_empty_sequences), dtype)
         else:
             r = self._counterfactual_utilities_or_regrets(
                 behavioral_strategy,
@@ -268,10 +274,11 @@ class SequenceFormPolytope:
         :param vector: Vector.
         :return: Normalized vector.
         """
+        np = self.kernel.numpy
+
         if vector.shape != (len(self.non_empty_sequences),):
             raise ValueError('invalid vector shape')
 
-        np = self.kernel.numpy
         A = self._A.copy()
         A[self._R, self._C] = vector
         d = A.sum(1).ravel()
