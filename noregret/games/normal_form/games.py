@@ -115,6 +115,22 @@ class TwoPlayerZeroSumNormalFormGame(
         return u, neg_v
 
 
+def from_matrix(kernel, matrix):
+    """Create a matrix game.
+
+    :param kernel: Kernel.
+    :param matrix: Matrix.
+    :return: Game.
+    """
+    R, C = matrix.shape
+    actions = (
+        OrderedSet(map('r{}'.format, range(R))),
+        OrderedSet(map('c{}'.format, range(C))),
+    )
+
+    return TwoPlayerZeroSumNormalFormGame(kernel, matrix, actions)
+
+
 def _2p_nfg(name, kernel):
     with open(Path(__file__).parent / f'{name}.json', 'rb') as file:
         return TwoPlayerNormalFormGame.loads(kernel, file.read())

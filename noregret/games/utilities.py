@@ -21,7 +21,7 @@ from noregret.games.normal_form.games import (
 from noregret.sequence_form_polytopes import SequenceFormPolytope
 
 
-def _nfg2efg(kernel, game, decision_points=str):
+def _nfg2efg(kernel, game, decision_points='p{}'.format):
     np = kernel.numpy
     scipy = kernel.scipy
     dtype = kernel.data_type

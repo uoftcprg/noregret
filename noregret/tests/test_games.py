@@ -85,6 +85,16 @@ class NormalFormGameTestCase(GameTestCaseMixin, TestCase):
             self.assertTrue((game.payoffs == game2.payoffs).all())
             self.assertEqual(game.actions, game2.actions)
 
+    def test_from_matrix(self):
+        np = self.KERNEL.numpy
+        dtype = self.KERNEL.data_type
+        A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
+        game = nr.from_matrix(self.KERNEL, A)
+        x, y = nr.linear_programming(game)
+        v = game.expected_row_utility(x, y)
+
+        self.assertAlmostEqual(v, 0.25)
+
 
 class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
     KERNEL = nr.FloatingPointKernel()

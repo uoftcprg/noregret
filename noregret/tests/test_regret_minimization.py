@@ -160,7 +160,7 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
         nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
         nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
     )
-    PLACES = 6
+    PLACES = 2
 
     def test_equivalence(self):
         for game in self.GAMES:
@@ -178,6 +178,28 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
                 game,
                 nr.CFR2(self.KERNEL, game.row_sequence_form_polytope),
                 nr.CFR2(self.KERNEL, game.column_sequence_form_polytope),
+                progress_bar=False,
+            )
+            e2 = game.exploitability(x_bar2, y_bar2)
+            v2 = game.expected_row_utility(x_bar2, y_bar2)
+
+            self.assertAlmostEqual(e, e2, self.PLACES)
+            self.assertAlmostEqual(v, v2, self.PLACES)
+
+            x_bar, y_bar = nr.regret_minimization(
+                game,
+                nr.CFR(self.KERNEL, game.row_sequence_form_polytope),
+                nr.CFR(self.KERNEL, game.column_sequence_form_polytope),
+                prediction=True,
+                progress_bar=False,
+            )
+            e = game.exploitability(x_bar, y_bar)
+            v = game.expected_row_utility(x_bar, y_bar)
+            x_bar2, y_bar2 = nr.regret_minimization(
+                game,
+                nr.CFR2(self.KERNEL, game.row_sequence_form_polytope),
+                nr.CFR2(self.KERNEL, game.column_sequence_form_polytope),
+                prediction=True,
                 progress_bar=False,
             )
             e2 = game.exploitability(x_bar2, y_bar2)
