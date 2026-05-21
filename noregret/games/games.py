@@ -22,6 +22,7 @@ class Game(ABC):
         :return: Number of players.
         """
 
+    @property
     @abstractmethod
     def is_symmetric(self):
         """Return whether the game is symmetric.

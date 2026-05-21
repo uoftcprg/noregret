@@ -13,8 +13,8 @@ import seaborn as sns
 KERNEL = nr.FloatingPointKernel()
 GAMES = {
     'Rock paper superscissors': nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-    'Kuhn poker': nr.from_open_spiel(KERNEL, 'kuhn_poker'),
-    'Leduc poker': nr.from_open_spiel(KERNEL, 'leduc_poker'),
+    'Kuhn poker': nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
+    'Leduc poker': nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
 }
 PARAMETERS = {
     'CFR': (nr.CFR, False, False),

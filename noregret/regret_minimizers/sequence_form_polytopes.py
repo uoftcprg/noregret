@@ -229,7 +229,7 @@ class CounterfactualRegretMinimization2(SequenceFormPolytopeRegretMinimizer):
         dtype = self.kernel.data_type
         A = self.sequence_form_polytope.actions
         J = self.sequence_form_polytope.decision_points
-        Sigma_plus = self.sequence_form_polytope.non_empty_sequences
+        seqs = self.sequence_form_polytope.non_empty_sequences
 
         if prediction is False or prediction is True:
             predictions = {j: prediction for j in J}
@@ -243,17 +243,17 @@ class CounterfactualRegretMinimization2(SequenceFormPolytopeRegretMinimizer):
                 m_j = []
 
                 for a in A[j]:
-                    m_j.append(m[Sigma_plus.index((j, a))])
+                    m_j.append(m[seqs.index((j, a))])
 
                 predictions[j] = np.array(m_j, dtype)
 
-        b = np.empty(len(Sigma_plus), dtype)
+        b = np.empty(len(seqs), dtype)
 
         for j, R in self.regret_minimizers.items():
             x = R.output(predictions[j])
 
             for a, p in zip(A[j], x):
-                b[Sigma_plus.index((j, a))] = p
+                b[seqs.index((j, a))] = p
 
         self.next_behavioral_strategy = b
         self.next_strategy = self.sequence_form_polytope.to_sequence_form(b)
@@ -267,7 +267,7 @@ class CounterfactualRegretMinimization2(SequenceFormPolytopeRegretMinimizer):
         dtype = self.kernel.data_type
         A = self.sequence_form_polytope.actions
         J = self.sequence_form_polytope.decision_points
-        Sigma_plus = self.sequence_form_polytope.non_empty_sequences
+        seqs = self.sequence_form_polytope.non_empty_sequences
         u = self.sequence_form_polytope.counterfactual_utilities(
             self.previous_behavioral_strategy,
             utility,
@@ -278,7 +278,7 @@ class CounterfactualRegretMinimization2(SequenceFormPolytopeRegretMinimizer):
             u_j = []
 
             for a in A[j]:
-                u_j.append(u[Sigma_plus.index((j, a))])
+                u_j.append(u[seqs.index((j, a))])
 
             counterfactual_utilities[j] = np.array(u_j, dtype)
 

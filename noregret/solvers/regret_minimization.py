@@ -110,7 +110,7 @@ def symmetric_regret_minimization(
     """
     np = game.kernel.numpy
 
-    if not game.is_symmetric():
+    if not game.is_symmetric:
         raise ValueError('game is asymmetric')
 
     R = regret_minimizer

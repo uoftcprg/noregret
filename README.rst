@@ -44,8 +44,8 @@ The code snippet below demonstrates how one can solve games via regret minimizat
    KERNEL = nr.FloatingPointKernel()
    GAMES = {
        'Rock paper superscissors': nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-       'Kuhn poker': nr.from_open_spiel(KERNEL, 'kuhn_poker'),
-       'Leduc poker': nr.from_open_spiel(KERNEL, 'leduc_poker'),
+       'Kuhn poker': nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
+       'Leduc poker': nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
    }
    PARAMETERS = {
        'CFR': (nr.CFR, False, False),
@@ -130,7 +130,7 @@ The code snippet below demonstrates how one can solve games while leveraging GPU
    import noregret as nr
    
    KERNEL = nr.CUDAKernel()
-   GAME = nr.from_open_spiel(KERNEL, 'liars_dice')
+   GAME = nr.to_efg(KERNEL, nr.from_open_spiel('liars_dice'))
    PARAMETERS = nr.CFR, True, False
    
    
@@ -170,8 +170,8 @@ The code snippet below demonstrates how one can solve games via linear programmi
    KERNEL = nr.FloatingPointKernel()
    GAMES = {
        'Rock paper superscissors': nr.RockPaperSuperscissors(KERNEL),
-       'Kuhn poker': nr.from_open_spiel(KERNEL, 'kuhn_poker'),
-       'Leduc poker': nr.from_open_spiel(KERNEL, 'leduc_poker'),
+       'Kuhn poker': nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
+       'Leduc poker': nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
    }
    
    

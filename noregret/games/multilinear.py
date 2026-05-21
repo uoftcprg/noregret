@@ -39,6 +39,7 @@ class MultilinearGame(Game, ABC):
         """
         return tuple(self.dimension(i) for i in range(self.player_count))
 
+    @property
     def is_symmetric(self):
         raise NotImplementedError
 
@@ -100,6 +101,7 @@ class TwoPlayerMultilinearGame(TwoPlayerGame, MultilinearGame, ABC):
         """
         return self.payoffs[1]
 
+    @property
     def is_symmetric(self):
         np = self.kernel.numpy
 

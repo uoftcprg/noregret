@@ -82,7 +82,7 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
         dtype = self.KERNEL.data_type
 
         for game, value in self.SYMMETRIC_GAME_VALUES:
-            assert game.is_symmetric()
+            assert game.is_symmetric
             assert isinstance(game, nr.NFG_2p0s)
 
             for R_type in self.REGRET_MINIMIZER_TYPES:
@@ -110,8 +110,8 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
         (nr.to_efg(nr.RockPaperScissors(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperSuperscissors(KERNEL)), 0),
-        (nr.from_open_spiel(KERNEL, 'kuhn_poker'), -1 / 18),
-        (nr.from_open_spiel(KERNEL, 'leduc_poker'), -0.08560642407800048),
+        (nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')), -1 / 18),
+        (nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')), -0.08560642408),
     )
     REGRET_MINIMIZION_PARAMETERS = (
         (partial(nr.CFR, KERNEL), False, False),
@@ -157,8 +157,8 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
         nr.to_efg(nr.RockPaperScissors(KERNEL)),
         nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
         nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.from_open_spiel(KERNEL, 'kuhn_poker'),
-        nr.from_open_spiel(KERNEL, 'leduc_poker'),
+        nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
+        nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
     )
     PLACES = 6
 

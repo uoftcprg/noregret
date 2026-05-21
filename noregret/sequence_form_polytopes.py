@@ -127,13 +127,13 @@ class SequenceFormPolytope:
 
         :return: Non-empty sequences.
         """
-        sequences = OrderedSet()
+        seqs = OrderedSet()
 
         for j in self.decision_points:
             for a in self.actions[j]:
-                sequences.add((j, a))
+                seqs.add((j, a))
 
-        return sequences
+        return seqs
 
     @property
     def row_count(self):

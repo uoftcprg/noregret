@@ -2,6 +2,7 @@
 from noregret.games import (
     AssuranceGame,
     BattleOfTheSexes,
+    BlackBoxGame,
     Chicken,
     ExtensiveFormGame,
     from_open_spiel,
@@ -114,6 +115,7 @@ to_efg = to_extensive_form
 __all__ = (
     'AssuranceGame',
     'BattleOfTheSexes',
+    'BlackBoxGame',
     'BlumMansour',
     'BM',
     'CFR',

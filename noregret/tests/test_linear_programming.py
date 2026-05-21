@@ -14,8 +14,8 @@ class LinearProgrammingTestCase(TestCase):
         (nr.to_efg(nr.RockPaperScissors(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperSuperscissors(KERNEL)), 0),
-        (nr.from_open_spiel(KERNEL, 'kuhn_poker'), -1 / 18),
-        (nr.from_open_spiel(KERNEL, 'leduc_poker'), -0.08560642407800048),
+        (nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')), -1 / 18),
+        (nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')), -0.08560642408),
     )
 
     def test_linear_programming(self):

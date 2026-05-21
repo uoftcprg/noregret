@@ -37,8 +37,8 @@ class ExtensiveFormGameTestCase(TestCase):
         nr.to_efg(nr.RockPaperScissors(KERNEL)),
         nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
         nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.from_open_spiel(KERNEL, 'kuhn_poker'),
-        nr.from_open_spiel(KERNEL, 'leduc_poker'),
+        nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
+        nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
     )
 
     def test_serialization(self):

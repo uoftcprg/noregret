@@ -1,4 +1,5 @@
 """Module for games."""
+from noregret.games.black_box import BlackBoxGame, from_open_spiel
 from noregret.games.extensive_form import (
     ExtensiveFormGame,
     TwoPlayerExtensiveFormGame,
@@ -26,11 +27,12 @@ from noregret.games.normal_form import (
     TwoPlayerNormalFormGame,
     TwoPlayerZeroSumNormalFormGame,
 )
-from noregret.games.utilities import from_open_spiel, to_extensive_form
+from noregret.games.utilities import to_extensive_form
 
 __all__ = (
     'AssuranceGame',
     'BattleOfTheSexes',
+    'BlackBoxGame',
     'Chicken',
     'ExtensiveFormGame',
     'from_open_spiel',

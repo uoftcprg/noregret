@@ -9,7 +9,6 @@ from noregret.utilities import import_object
 @dataclass(repr=False)
 class Kernel(ABC):
     """Abstract base class for kernels."""
-
     data_type: Any = float
     """Data type."""
     index_type: Any = int
