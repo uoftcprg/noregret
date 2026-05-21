@@ -303,8 +303,7 @@ class SequenceFormPolytope:
 
         u = utility.copy()
 
-        for L_R, L_A, L_B, L_C_B in zip(
-                self._L_R[::-1],
+        for L_A, L_B, L_C_B in zip(
                 self._L_A[::-1],
                 self._L_B[::-1],
                 self._L_C_B2[::-1],
@@ -328,8 +327,7 @@ class SequenceFormPolytope:
 
         u = utility.copy()
 
-        for L_R, L_A, L_B, L_C_B in zip(
-                self._L_R[::-1],
+        for L_A, L_B, L_C_B in zip(
                 self._L_A[::-1],
                 self._L_B[::-1],
                 self._L_C_B2[::-1],

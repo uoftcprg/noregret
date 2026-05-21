@@ -1,3 +1,4 @@
+"""Module for utilities."""
 from collections import defaultdict
 from functools import partial, singledispatch
 from itertools import starmap
