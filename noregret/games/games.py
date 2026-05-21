@@ -98,12 +98,14 @@ class Game(ABC):
         :param strategy_profile: Strategy profile.
         :return: Nash gap.
         """
-        expected_utilities = self.expected_utilities(strategy_profile)
-        best_response_values = self.best_response_values(strategy_profile)
+        expected_utilities = self.expected_utilities(*strategy_profile)
+        best_response_values = self.best_response_values(*strategy_profile)
+        nash_gap = 0
 
-        assert (best_response_values >= expected_utilities).all()
+        for u, u_prime in zip(best_response_values, expected_utilities):
+            assert u >= u_prime
 
-        nash_gap = (best_response_values - expected_utilities).sum()
+            nash_gap += u - u_prime
 
         return nash_gap
 

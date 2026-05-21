@@ -122,12 +122,12 @@ class TwoPlayerExtensiveFormGame(TwoPlayerMultilinearGame, ExtensiveFormGame):
     def row_best_response_value(self, column_strategy):
         u = self.row_utility(column_strategy)
 
-        return self.row_sequence_form_polytopes.best_response_value(u)
+        return self.row_sequence_form_polytope.best_response_value(u)
 
     def column_best_response_value(self, row_strategy):
         v = self.column_utility(row_strategy)
 
-        return self.column_sequence_form_polytopes.best_response_value(v)
+        return self.column_sequence_form_polytope.best_response_value(v)
 
 
 @dataclass

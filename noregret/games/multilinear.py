@@ -122,12 +122,6 @@ class TwoPlayerMultilinearGame(TwoPlayerGame, MultilinearGame, ABC):
     def expected_column_utility(self, row_strategy, column_strategy):
         return row_strategy @ self.column_payoffs @ column_strategy
 
-    def expected_utility(self, player, row_strategy, column_strategy):
-        return row_strategy @ self.payoffs[player] @ column_strategy
-
-    def expected_utilities(self, row_strategy, column_strategy):
-        return row_strategy @ self.payoffs @ column_strategy
-
 
 @dataclass
 class TwoPlayerZeroSumMultilinearGame(
@@ -144,7 +138,7 @@ class TwoPlayerZeroSumMultilinearGame(
     def __post_init__(self):
         super(MultilinearGame, self).__post_init__()
 
-        if self.payoffs.shape != (self.row_dimension, self.column_dimension):
+        if self.payoffs.shape != self.dimensions:
             raise ValueError('inconsistent dimensions')
 
     @property

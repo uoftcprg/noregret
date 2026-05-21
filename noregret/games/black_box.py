@@ -85,11 +85,11 @@ class BlackBoxGame(ABC):
         """
 
     @abstractmethod
-    def utility(self, player, node):
+    def utility(self, node, player):
         """Return the utility given a player and a node.
 
-        :param player: Player.
         :param node: Node.
+        :param player: Player.
         :return: Utility.
         """
 
@@ -99,9 +99,7 @@ class BlackBoxGame(ABC):
         :param node: Node.
         :return: Utilities.
         """
-        P = range(self.player_count)
-
-        return list(map(self.utility(i, node) for i in P))
+        return list(map(partial(self.utility, node), range(self.player_count)))
 
     @abstractmethod
     def information_set(self, node):
@@ -128,7 +126,7 @@ class BlackBoxGame(ABC):
         """
         A = self.actions(node)
 
-        return list(map(self.chance_probability(node, a) for a in A))
+        return list(map(partial(self.chance_probability, node), A))
 
 
 @dataclass
@@ -168,14 +166,14 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
             actions.append(node.action_to_string(a))
             children.append(node.child(a))
 
-        return actions, children
+        return OrderedSet(actions), children
 
     def player(self, node):
         i = node.current_player()
 
         return None if i == -1 else i
 
-    def utility(self, player, node):
+    def utility(self, node, player):
         return node.player_reward(player)
 
     def utilities(self, node):

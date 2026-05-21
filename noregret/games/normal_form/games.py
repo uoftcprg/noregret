@@ -90,10 +90,13 @@ class TwoPlayerNormalFormGame(TwoPlayerMultilinearGame, NormalFormGame):
         """
         return len(self.column_actions)
 
-    def row_best_response_value(self, player, column_strategy):
+    def expected_utilities(self, row_strategy, column_strategy):
+        return row_strategy @ self.payoffs @ column_strategy
+
+    def row_best_response_value(self, column_strategy):
         return self.row_utility(column_strategy).max()
 
-    def column_best_response_value(self, player, row_strategy):
+    def column_best_response_value(self, row_strategy):
         return self.column_utility(row_strategy).max()
 
 

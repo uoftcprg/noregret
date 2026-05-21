@@ -31,6 +31,9 @@ def regret_minimization(
     """
     np = game.kernel.numpy
 
+    if len(regret_minimizers) != game.player_count:
+        raise ValueError('inconsistent number of regret minimizers')
+
     def average_strategy_profile():
         average_strategy_profile = []
 

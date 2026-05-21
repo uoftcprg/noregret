@@ -2,7 +2,7 @@
 NoRegret
 ========
 
-NoRegret is an open-source software library for no-regret learning dynamics and computational game solving, developed by the Universal, Open, Free, and Transparent Computer Poker Research Group. NoRegret implements an extensive array of regret minimizers and game solvers, and also supports GPU-acceleration. The library can be used in a variety of use cases, from solving games to conducting research in online convex optimization. NoRegret's reliability has been established through extensive doctests and unit tests, achieving 91% code coverage.
+NoRegret is an open-source software library for no-regret learning dynamics and computational game solving, developed by the Universal, Open, Free, and Transparent Computer Poker Research Group. NoRegret implements an extensive array of regret minimizers and game solvers, and also supports GPU-acceleration. The library can be used in a variety of use cases, from solving games to conducting research in online convex optimization. NoRegret's reliability has been established through extensive doctests and unit tests, achieving 95% code coverage.
 
 Features
 --------
