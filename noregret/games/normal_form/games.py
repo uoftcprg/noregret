@@ -115,7 +115,7 @@ class TwoPlayerZeroSumNormalFormGame(
         return u, neg_v
 
 
-def from_matrix(kernel, matrix):
+def matrix_game(kernel, matrix):
     """Create a matrix game.
 
     :param kernel: Kernel.

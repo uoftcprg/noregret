@@ -1,7 +1,8 @@
 """Module for games."""
-from noregret.games.black_box import BlackBoxGame, from_open_spiel
+from noregret.games.black_box import BlackBoxGame, open_spiel_game
 from noregret.games.extensive_form import (
     ExtensiveFormGame,
+    to_extensive_form_game,
     TwoPlayerExtensiveFormGame,
     TwoPlayerZeroSumExtensiveFormGame,
 )
@@ -15,9 +16,9 @@ from noregret.games.normal_form import (
     AssuranceGame,
     BattleOfTheSexes,
     Chicken,
-    from_matrix,
     GiftExchangeGame,
     MatchingPennies,
+    matrix_game,
     NormalFormGame,
     PrisonersDilemma,
     PureCoordination,
@@ -28,7 +29,6 @@ from noregret.games.normal_form import (
     TwoPlayerNormalFormGame,
     TwoPlayerZeroSumNormalFormGame,
 )
-from noregret.games.utilities import to_extensive_form
 
 __all__ = (
     'AssuranceGame',
@@ -36,20 +36,20 @@ __all__ = (
     'BlackBoxGame',
     'Chicken',
     'ExtensiveFormGame',
-    'from_matrix',
-    'from_open_spiel',
     'Game',
     'GiftExchangeGame',
     'MatchingPennies',
+    'matrix_game',
     'MultilinearGame',
     'NormalFormGame',
+    'open_spiel_game',
     'PrisonersDilemma',
     'PureCoordination',
     'RockPaperScissors',
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',
     'StagHunt',
-    'to_extensive_form',
+    'to_extensive_form_game',
     'TwoPlayerExtensiveFormGame',
     'TwoPlayerGame',
     'TwoPlayerMultilinearGame',

@@ -171,7 +171,7 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
     def player(self, node):
         i = node.current_player()
 
-        return None if i == -1 else i
+        return None if i < 0 else i
 
     def utility(self, node, player):
         return node.player_reward(player)
@@ -189,7 +189,7 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
         return [p for _, p in node.chance_outcomes()]
 
 
-def from_open_spiel(game):
+def open_spiel_game(game):
     """Load a game from OpenSpiel.
 
     :param game: Game in OpenSpiel.

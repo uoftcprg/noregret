@@ -110,8 +110,8 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
         (nr.to_efg(nr.RockPaperScissors(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)), 0),
         (nr.to_efg(nr.RockPaperSuperscissors(KERNEL)), 0),
-        (nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')), -1 / 18),
-        (nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')), -0.08560642408),
+        (nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')), -1 / 18),
+        (nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')), -0.08560642408),
     )
     REGRET_MINIMIZION_PARAMETERS = (
         (partial(nr.CFR, KERNEL), False, False),
@@ -157,8 +157,8 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
         nr.to_efg(nr.RockPaperScissors(KERNEL)),
         nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
         nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
-        nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
+        nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
+        nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
     )
     PLACES = 2
 

@@ -5,7 +5,7 @@ from orjson import dumps, OPT_SERIALIZE_NUMPY
 import noregret as nr
 
 KERNEL = nr.CUDAKernel()
-GAME = nr.to_efg(KERNEL, nr.from_open_spiel('liars_dice'))
+GAME = nr.to_efg(KERNEL, nr.open_spiel_game('liars_dice'))
 PARAMETERS = nr.CFR, True, False
 
 

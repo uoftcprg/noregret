@@ -6,8 +6,8 @@ import noregret as nr
 KERNEL = nr.FloatingPointKernel()
 GAMES = {
     'Rock paper superscissors': nr.RockPaperSuperscissors(KERNEL),
-    'Kuhn poker': nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
-    'Leduc poker': nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
+    'Kuhn poker': nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
+    'Leduc poker': nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
 }
 
 

@@ -62,27 +62,32 @@ def regret_minimization(
     for R in regret_minimizers:
         s.append(R.output(prediction))
 
-    for i in iterations:
+    for t in iterations:
         if alternation:
-            for j, R in enumerate(regret_minimizers):
-                R.observe(game.utility(j, *s[:j], *s[j + 1:]))
+            for i, R in enumerate(regret_minimizers):
+                R.observe(game.utility(i, *s[:i], *s[i + 1:]))
 
-                s[j] = R.output(prediction)
+                s[i] = R.output(prediction)
         else:
             U = game.utilities(*s)
 
-            for j, (R, u) in enumerate(zip(regret_minimizers, U)):
+            for i, (R, u) in enumerate(zip(regret_minimizers, U)):
                 R.observe(u)
 
-                s[j] = R.output(prediction)
+                s[i] = R.output(prediction)
 
-        if not checkpoints or i in checkpoints:
+        if not checkpoints or t in checkpoints:
             if update is not None:
-                update()
+                status = update()
+            else:
+                status = False
 
             if (
-                    target_exploitability is not None
-                    and exploitability() < target_exploitability
+                    status
+                    or (
+                        target_exploitability is not None
+                        and exploitability() < target_exploitability
+                    )
             ):
                 break
 
@@ -138,18 +143,23 @@ def symmetric_regret_minimization(
 
     s_neg_1 = [R.output(prediction)] * (game.player_count - 1)
 
-    for i in iterations:
+    for t in iterations:
         R.observe(game.utility(0, *s_neg_1))
 
         s_neg_1 = [R.output(prediction)] * (game.player_count - 1)
 
-        if not checkpoints or i in checkpoints:
+        if not checkpoints or t in checkpoints:
             if update is not None:
-                update()
+                status = update()
+            else:
+                status = False
 
             if (
-                    target_exploitability is not None
-                    and exploitability() < target_exploitability
+                    status
+                    or (
+                        target_exploitability is not None
+                        and exploitability() < target_exploitability
+                    )
             ):
                 break
 

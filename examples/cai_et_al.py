@@ -11,7 +11,7 @@ KERNEL = nr.FloatingPointKernel()
 np = KERNEL.numpy
 dtype = KERNEL.data_type
 A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
-GAME = nr.from_matrix(KERNEL, A)
+GAME = nr.matrix_game(KERNEL, A)
 PARAMETERS = {
     'PRM': (nr.RegretMatching, False),
     'PRM w/alt.': (nr.RegretMatching, True),

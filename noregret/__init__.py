@@ -5,20 +5,20 @@ from noregret.games import (
     BlackBoxGame,
     Chicken,
     ExtensiveFormGame,
-    from_matrix,
-    from_open_spiel,
     Game,
     GiftExchangeGame,
     MatchingPennies,
+    matrix_game,
     MultilinearGame,
     NormalFormGame,
+    open_spiel_game,
     PrisonersDilemma,
     PureCoordination,
     RockPaperScissors,
     RockPaperScissorsPlus,
     RockPaperSuperscissors,
     StagHunt,
-    to_extensive_form,
+    to_extensive_form_game,
     TwoPlayerExtensiveFormGame,
     TwoPlayerGame,
     TwoPlayerMultilinearGame,
@@ -110,8 +110,8 @@ rm = regret_minimization
 """Alias for :func:`noregret.regret_minimization`."""
 symmetric_rm = symmetric_regret_minimization
 """Alias for :func:`noregret.symmetric_regret_minimization`."""
-to_efg = to_extensive_form
-"""Alias for :func:`noregret.to_extensive_form`."""
+to_efg = to_extensive_form_game
+"""Alias for :func:`noregret.to_extensive_form_game`."""
 
 __all__ = (
     'AssuranceGame',
@@ -139,8 +139,7 @@ __all__ = (
     'ExtensiveFormGame',
     'FloatingPointKernel',
     'FollowTheRegularizedLeader',
-    'from_matrix',
-    'from_open_spiel',
+    'open_spiel_game',
     'FTRL',
     'Game',
     'GiftExchangeGame',
@@ -150,6 +149,7 @@ __all__ = (
     'linear_programming',
     'lp',
     'MatchingPennies',
+    'matrix_game',
     'MD',
     'MirrorDescent',
     'MultilinearGame',
@@ -183,7 +183,7 @@ __all__ = (
     'symmetric_regret_minimization',
     'symmetric_rm',
     'to_efg',
-    'to_extensive_form',
+    'to_extensive_form_game',
     'tuple_or_none',
     'TwoPlayerExtensiveFormGame',
     'TwoPlayerGame',

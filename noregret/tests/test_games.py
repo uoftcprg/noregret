@@ -85,11 +85,11 @@ class NormalFormGameTestCase(GameTestCaseMixin, TestCase):
             self.assertTrue((game.payoffs == game2.payoffs).all())
             self.assertEqual(game.actions, game2.actions)
 
-    def test_from_matrix(self):
+    def test_matrix_game(self):
         np = self.KERNEL.numpy
         dtype = self.KERNEL.data_type
         A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
-        game = nr.from_matrix(self.KERNEL, A)
+        game = nr.matrix_game(self.KERNEL, A)
         x, y = nr.linear_programming(game)
         v = game.expected_row_utility(x, y)
 
@@ -103,8 +103,8 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
         nr.to_efg(nr.RockPaperScissors(KERNEL)),
         nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
         nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.to_efg(KERNEL, nr.from_open_spiel('kuhn_poker')),
-        nr.to_efg(KERNEL, nr.from_open_spiel('leduc_poker')),
+        nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
+        nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
     )
 
     def uniform_strategy_profile(self, game):
@@ -144,7 +144,7 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
 
 
 class BlackBoxGameTestCase(TestCase):
-    GAMES = nr.from_open_spiel('kuhn_poker'), nr.from_open_spiel('leduc_poker')
+    GAMES = nr.open_spiel_game('kuhn_poker'), nr.open_spiel_game('leduc_poker')
 
     def test_actions_and_children(self):
         for game in self.GAMES:
