@@ -132,12 +132,12 @@ def matrix_game(kernel, matrix):
 
 
 def _2p_nfg(name, kernel):
-    with open(Path(__file__).parent / f'{name}.json', 'rb') as file:
+    with open(Path(__file__).parent / f'examples/{name}.json', 'rb') as file:
         return TwoPlayerNormalFormGame.loads(kernel, file.read())
 
 
 def _2p0s_nfg(name, kernel):
-    with open(Path(__file__).parent / f'{name}.json', 'rb') as file:
+    with open(Path(__file__).parent / f'examples/{name}.json', 'rb') as file:
         return TwoPlayerZeroSumNormalFormGame.loads(kernel, file.read())
 
 

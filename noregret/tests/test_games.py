@@ -5,12 +5,14 @@ import noregret as nr
 
 
 class GameTestCaseMixin(ABC):
+    KER = None
+
     @abstractmethod
     def uniform_strategy_profile(self, game):
         pass
 
     def test_equivalence(self):
-        np = self.KERNEL.numpy
+        np = self.KER.numpy
 
         for game in self.GAMES:
             x, y = self.uniform_strategy_profile(game)
@@ -38,30 +40,30 @@ class GameTestCaseMixin(ABC):
 
 
 class NormalFormGameTestCase(GameTestCaseMixin, TestCase):
-    KERNEL = nr.FloatingPointKernel()
+    KER = nr.FPKer()
     GAMES = (
-        nr.AssuranceGame(KERNEL),
-        nr.BattleOfTheSexes(KERNEL),
-        nr.Chicken(KERNEL),
-        nr.GiftExchangeGame(KERNEL),
-        nr.MatchingPennies(KERNEL),
-        nr.PrisonersDilemma(KERNEL),
-        nr.PureCoordination(KERNEL),
-        nr.RockPaperScissors(KERNEL),
-        nr.RockPaperScissorsPlus(KERNEL),
-        nr.RockPaperSuperscissors(KERNEL),
-        nr.StagHunt(KERNEL),
+        nr.AssuranceGame(KER),
+        nr.BattleOfTheSexes(KER),
+        nr.Chicken(KER),
+        nr.GiftExchangeGame(KER),
+        nr.MatchingPennies(KER),
+        nr.PrisonersDilemma(KER),
+        nr.PureCoordination(KER),
+        nr.RockPaperScissors(KER),
+        nr.RockPaperScissorsPlus(KER),
+        nr.RockPaperSuperscissors(KER),
+        nr.StagHunt(KER),
     )
 
     def uniform_strategy_profile(self, game):
-        np = self.KERNEL.numpy
-        dtype = self.KERNEL.data_type
+        np = self.KER.numpy
+        dtype = self.KER.data_type
 
         for n in game.dimensions:
             yield np.full(n, 1 / n, dtype)
 
     def test_best_response_value(self):
-        np = self.KERNEL.numpy
+        np = self.KER.numpy
 
         for game in self.GAMES:
             x, y = self.uniform_strategy_profile(game)
@@ -78,7 +80,7 @@ class NormalFormGameTestCase(GameTestCaseMixin, TestCase):
     def test_serialization(self):
         for game in self.GAMES:
             raw_game = game.dumps()
-            game2 = type(game).loads(self.KERNEL, raw_game)
+            game2 = type(game).loads(self.KER, raw_game)
             raw_game2 = game2.dumps()
 
             self.assertEqual(raw_game, raw_game2)
@@ -86,25 +88,25 @@ class NormalFormGameTestCase(GameTestCaseMixin, TestCase):
             self.assertEqual(game.actions, game2.actions)
 
     def test_matrix_game(self):
-        np = self.KERNEL.numpy
-        dtype = self.KERNEL.data_type
+        np = self.KER.numpy
+        dtype = self.KER.data_type
         A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
-        game = nr.matrix_game(self.KERNEL, A)
-        x, y = nr.linear_programming(game)
+        game = nr.matrix_game(self.KER, A)
+        x, y = nr.lp(game)
         v = game.expected_row_utility(x, y)
 
         self.assertAlmostEqual(v, 0.25)
 
 
 class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
-    KERNEL = nr.FloatingPointKernel()
+    KER = nr.FPKer()
     GAMES = (
-        nr.to_efg(nr.MatchingPennies(KERNEL)),
-        nr.to_efg(nr.RockPaperScissors(KERNEL)),
-        nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
-        nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-        nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+        nr.to_efg(KER, nr.MatchingPennies(KER)),
+        nr.to_efg(KER, nr.RockPaperScissors(KER)),
+        nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)),
+        nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
+        nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+        nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
     )
 
     def uniform_strategy_profile(self, game):
@@ -112,7 +114,7 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
             yield sfp.to_sequence_form(sfp.behavioral_form_uniform_strategy)
 
     def test_best_response_value(self):
-        np = self.KERNEL.numpy
+        np = self.KER.numpy
 
         for game in self.GAMES:
             x, y = self.uniform_strategy_profile(game)
@@ -129,7 +131,7 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
     def test_serialization(self):
         for game in self.GAMES:
             raw_game = game.dumps()
-            game2 = type(game).loads(self.KERNEL, raw_game)
+            game2 = type(game).loads(self.KER, raw_game)
             raw_game2 = game2.dumps()
 
             self.assertEqual(raw_game, raw_game2)
@@ -144,7 +146,11 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
 
 
 class BlackBoxGameTestCase(TestCase):
-    GAMES = nr.open_spiel_game('kuhn_poker'), nr.open_spiel_game('leduc_poker')
+    KER = nr.FPKer()
+    GAMES = (
+        nr.open_spiel_game(KER, 'kuhn_poker'),
+        nr.open_spiel_game(KER, 'leduc_poker'),
+    )
 
     def test_actions_and_children(self):
         for game in self.GAMES:
@@ -172,20 +178,24 @@ class BlackBoxGameTestCase(TestCase):
             self.assertEqual(A_children, A_children2)
 
     def test_utilities(self):
+        np = self.KER.numpy
+
         for game in self.GAMES:
             h = game.root_node
             us = game.utilities(h)
             us2 = nr.BlackBoxGame.utilities(game, h)
 
-            self.assertEqual(us, us2)
+            np.testing.assert_equal(us, us2)
 
     def test_chance_probabilities(self):
+        np = self.KER.numpy
+
         for game in self.GAMES:
             h = game.root_node
             ps = game.chance_probabilities(h)
             ps2 = nr.BlackBoxGame.chance_probabilities(game, h)
 
-            self.assertEqual(ps, ps2)
+            np.testing.assert_equal(ps, ps2)
 
 
 if __name__ == '__main__':

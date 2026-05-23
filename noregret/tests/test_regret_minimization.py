@@ -6,13 +6,13 @@ import noregret as nr
 
 
 class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
-    KERNEL = nr.FloatingPointKernel('single')
+    KER = nr.FPKer('single')
     SYMMETRIC_GAME_VALUES = (
-        (nr.RockPaperScissors(KERNEL), 0),
-        (nr.RockPaperScissorsPlus(KERNEL), 0),
-        (nr.RockPaperSuperscissors(KERNEL), 0),
+        (nr.RockPaperScissors(KER), 0),
+        (nr.RockPaperScissorsPlus(KER), 0),
+        (nr.RockPaperSuperscissors(KER), 0),
     )
-    GAME_VALUES = *SYMMETRIC_GAME_VALUES, (nr.MatchingPennies(KERNEL), 0)
+    GAME_VALUES = *SYMMETRIC_GAME_VALUES, (nr.MatchingPennies(KER), 0)
     REGRET_MINIMIZER_TYPES = (
         partial(nr.MWU, learning_rate=1e-3),
         partial(nr.ER, learning_rate=1e-3),
@@ -26,7 +26,7 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
     DELTA = 2 * TARGET_EXPLOITABILITY
 
     def test_average_iterate_convergence(self):
-        dtype = self.KERNEL.data_type
+        dtype = self.KER.data_type
 
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.NFG_2p0s)
@@ -34,10 +34,10 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
             for R_type in self.REGRET_MINIMIZER_TYPES:
                 for alt in (True, False):
                     for pred in (True, False):
-                        x_bar, y_bar = nr.regret_minimization(
+                        x_bar, y_bar = nr.rm(
                             game,
-                            R_type(self.KERNEL, game.row_dimension),
-                            R_type(self.KERNEL, game.column_dimension),
+                            R_type(self.KER, game.row_dimension),
+                            R_type(self.KER, game.column_dimension),
                             alternation=alt,
                             prediction=pred,
                             iteration_count=self.ITERATION_COUNT,
@@ -53,17 +53,17 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
                         self.assertEqual(v.dtype, dtype)
 
     def test_last_iterate_convergence(self):
-        dtype = self.KERNEL.data_type
+        dtype = self.KER.data_type
 
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.NFG_2p0s)
 
             for R_type in self.REGRET_MINIMIZER_TYPES:
                 for alt in (True, False):
-                    x_bar, y_bar = nr.regret_minimization(
+                    x_bar, y_bar = nr.rm(
                         game,
-                        R_type(self.KERNEL, game.row_dimension),
-                        R_type(self.KERNEL, game.column_dimension),
+                        R_type(self.KER, game.row_dimension),
+                        R_type(self.KER, game.column_dimension),
                         alternation=alt,
                         prediction=True,
                         iteration_count=self.ITERATION_COUNT,
@@ -79,7 +79,7 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
                     self.assertEqual(v.dtype, dtype)
 
     def test_frequent_iterate_convergence(self):
-        dtype = self.KERNEL.data_type
+        dtype = self.KER.data_type
 
         for game, value in self.SYMMETRIC_GAME_VALUES:
             assert game.is_symmetric
@@ -87,9 +87,9 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
 
             for R_type in self.REGRET_MINIMIZER_TYPES:
                 R_type = partial(nr.BM, regret_minimizer_type=R_type)
-                x_bar, y_bar = nr.symmetric_regret_minimization(
+                x_bar, y_bar = nr.symmetric_rm(
                     game,
-                    R_type(self.KERNEL, game.row_dimension, gamma=inf),
+                    R_type(self.KER, game.row_dimension, gamma=inf),
                     iteration_count=self.ITERATION_COUNT,
                     target_exploitability=self.TARGET_EXPLOITABILITY,
                     progress_bar=False,
@@ -104,34 +104,34 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
 
 
 class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
-    KERNEL = nr.FloatingPointKernel('single')
+    KER = nr.FPKer('single')
     GAME_VALUES = (
-        (nr.to_efg(nr.MatchingPennies(KERNEL)), 0),
-        (nr.to_efg(nr.RockPaperScissors(KERNEL)), 0),
-        (nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)), 0),
-        (nr.to_efg(nr.RockPaperSuperscissors(KERNEL)), 0),
-        (nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')), -1 / 18),
-        (nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')), -0.08560642408),
+        (nr.to_efg(KER, nr.MatchingPennies(KER)), 0),
+        (nr.to_efg(KER, nr.RockPaperScissors(KER)), 0),
+        (nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)), 0),
+        (nr.to_efg(KER, nr.RockPaperSuperscissors(KER)), 0),
+        (nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')), -1 / 18),
+        (nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')), -0.085606424),
     )
     REGRET_MINIMIZION_PARAMETERS = (
-        (partial(nr.CFR, KERNEL), False, False),
-        (partial(nr.CFR_plus, KERNEL), True, False),
-        (partial(nr.DCFR, KERNEL), True, False),
-        (partial(nr.CFR_plus, KERNEL, gamma=2), True, True),
-        (partial(nr.CFR_plus, KERNEL, gamma=inf), True, True),
+        (partial(nr.CFR, KER), False, False),
+        (partial(nr.CFR_plus, KER), True, False),
+        (partial(nr.DCFR, KER), True, False),
+        (partial(nr.CFR_plus, KER, gamma=2), True, True),
+        (partial(nr.CFR_plus, KER, gamma=inf), True, True),
     )
     ITERATION_COUNT = 1000000
     TARGET_EXPLOITABILITY = 1e-2
     DELTA = 2 * TARGET_EXPLOITABILITY
 
     def test_convergence(self):
-        dtype = self.KERNEL.data_type
+        dtype = self.KER.data_type
 
         for game, value in self.GAME_VALUES:
             assert isinstance(game, nr.EFG_2p0s)
 
             for (R_type, alt, pred) in self.REGRET_MINIMIZION_PARAMETERS:
-                x_bar, y_bar = nr.regret_minimization(
+                x_bar, y_bar = nr.rm(
                     game,
                     R_type(game.row_sequence_form_polytope),
                     R_type(game.column_sequence_form_polytope),
@@ -151,14 +151,14 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
 
 
 class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
-    KERNEL = nr.FloatingPointKernel()
+    KER = nr.FPKer()
     GAMES = (
-        nr.to_efg(nr.MatchingPennies(KERNEL)),
-        nr.to_efg(nr.RockPaperScissors(KERNEL)),
-        nr.to_efg(nr.RockPaperScissorsPlus(KERNEL)),
-        nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-        nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-        nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+        nr.to_efg(KER, nr.MatchingPennies(KER)),
+        nr.to_efg(KER, nr.RockPaperScissors(KER)),
+        nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)),
+        nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
+        nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+        nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
     )
     PLACES = 2
 
@@ -166,18 +166,18 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
         for game in self.GAMES:
             assert isinstance(game, nr.EFG_2p0s)
 
-            x_bar, y_bar = nr.regret_minimization(
+            x_bar, y_bar = nr.rm(
                 game,
-                nr.CFR(self.KERNEL, game.row_sequence_form_polytope),
-                nr.CFR(self.KERNEL, game.column_sequence_form_polytope),
+                nr.CFR(self.KER, game.row_sequence_form_polytope),
+                nr.CFR(self.KER, game.column_sequence_form_polytope),
                 progress_bar=False,
             )
             e = game.exploitability(x_bar, y_bar)
             v = game.expected_row_utility(x_bar, y_bar)
-            x_bar2, y_bar2 = nr.regret_minimization(
+            x_bar2, y_bar2 = nr.rm(
                 game,
-                nr.CFR2(self.KERNEL, game.row_sequence_form_polytope),
-                nr.CFR2(self.KERNEL, game.column_sequence_form_polytope),
+                nr.CFR2(self.KER, game.row_sequence_form_polytope),
+                nr.CFR2(self.KER, game.column_sequence_form_polytope),
                 progress_bar=False,
             )
             e2 = game.exploitability(x_bar2, y_bar2)
@@ -186,19 +186,19 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
             self.assertAlmostEqual(e, e2, self.PLACES)
             self.assertAlmostEqual(v, v2, self.PLACES)
 
-            x_bar, y_bar = nr.regret_minimization(
+            x_bar, y_bar = nr.rm(
                 game,
-                nr.CFR(self.KERNEL, game.row_sequence_form_polytope),
-                nr.CFR(self.KERNEL, game.column_sequence_form_polytope),
+                nr.CFR(self.KER, game.row_sequence_form_polytope),
+                nr.CFR(self.KER, game.column_sequence_form_polytope),
                 prediction=True,
                 progress_bar=False,
             )
             e = game.exploitability(x_bar, y_bar)
             v = game.expected_row_utility(x_bar, y_bar)
-            x_bar2, y_bar2 = nr.regret_minimization(
+            x_bar2, y_bar2 = nr.rm(
                 game,
-                nr.CFR2(self.KERNEL, game.row_sequence_form_polytope),
-                nr.CFR2(self.KERNEL, game.column_sequence_form_polytope),
+                nr.CFR2(self.KER, game.row_sequence_form_polytope),
+                nr.CFR2(self.KER, game.column_sequence_form_polytope),
                 prediction=True,
                 progress_bar=False,
             )

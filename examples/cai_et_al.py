@@ -7,11 +7,11 @@ import noregret as nr
 import pandas as pd
 import seaborn as sns
 
-KERNEL = nr.FloatingPointKernel()
-np = KERNEL.numpy
-dtype = KERNEL.data_type
+KER = nr.FPKer()
+np = KER.numpy
+dtype = KER.data_type
 A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
-GAME = nr.matrix_game(KERNEL, A)
+GAME = nr.matrix_game(KER, A)
 PARAMETERS = {
     'PRM': (nr.RegretMatching, False),
     'PRM w/alt.': (nr.RegretMatching, True),
@@ -27,8 +27,8 @@ def main():
     variants = []
 
     for variant, (R_type, alt) in tqdm(PARAMETERS.items(), leave=False):
-        R_row = R_type(KERNEL, GAME.row_dimension, gamma=inf)
-        R_col = R_type(KERNEL, GAME.column_dimension, gamma=inf)
+        R_row = R_type(KER, GAME.row_dimension, gamma=inf)
+        R_col = R_type(KER, GAME.column_dimension, gamma=inf)
 
         def update():
             t = R_row.iteration_count
@@ -40,7 +40,7 @@ def main():
             exploitabilities.append(epsilon)
             variants.append(variant)
 
-        nr.regret_minimization(
+        nr.rm(
             GAME,
             R_row,
             R_col,

@@ -1,5 +1,5 @@
-"""Complete Problem 3.4 of Homework 2 from CMU graduate course 15-888:
-Computational Game Solving.
+"""Solution to Problem 3.4 of Homework 2 from CMU SCS CSD graduate
+course 15-888: Computational Game Solving.
 """
 from functools import partial
 from math import inf
@@ -10,11 +10,11 @@ import noregret as nr
 import pandas as pd
 import seaborn as sns
 
-KERNEL = nr.FloatingPointKernel()
+KER = nr.FPKer()
 GAMES = {
-    'Rock paper superscissors': nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-    'Kuhn poker': nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-    'Leduc poker': nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+    'Rock paper superscissors': nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
+    'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+    'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
 }
 PARAMETERS = {
     'CFR': (nr.CFR, False, False),
@@ -36,8 +36,8 @@ def main():
                 PARAMETERS.items(),
                 leave=False,
         ):
-            R_row = R_type(KERNEL, game.row_sequence_form_polytope)
-            R_col = R_type(KERNEL, game.column_sequence_form_polytope)
+            R_row = R_type(KER, game.row_sequence_form_polytope)
+            R_col = R_type(KER, game.column_sequence_form_polytope)
 
             def update():
                 t = R_row.iteration_count
@@ -51,7 +51,7 @@ def main():
                 expected_utilities.append(u)
                 variants.append(variant)
 
-            nr.regret_minimization(
+            nr.rm(
                 game,
                 R_row,
                 R_col,

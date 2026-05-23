@@ -1,10 +1,8 @@
 """Module for linear programming (LP)."""
 from gurobipy import Env, GRB, Model
 
-from noregret.games.extensive_form.games import (
-    TwoPlayerZeroSumExtensiveFormGame,
-)
-from noregret.games.normal_form.games import TwoPlayerZeroSumNormalFormGame
+from noregret.games.extensive_form import TwoPlayerZeroSumExtensiveFormGame
+from noregret.games.normal_form import TwoPlayerZeroSumNormalFormGame
 
 
 def _lp_2p0s_nfg(game, parameters):

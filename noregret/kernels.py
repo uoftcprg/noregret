@@ -22,10 +22,11 @@ class Kernel(ABC):
     def euclidean_projection_on_probability_simplex(self, input_):
         """Euclidean projection of the input on a probability simplex.
 
-        >>> kernel = FloatingPointKernel()
-        >>> pi = kernel.euclidean_projection_on_probability_simplex
-        >>> np = kernel.numpy
-        >>> dtype = kernel.data_type
+        >>> import noregret as nr
+        >>> ker = nr.FPKer()
+        >>> pi = ker.euclidean_projection_on_probability_simplex
+        >>> np = ker.numpy
+        >>> dtype = ker.data_type
         >>> pi(np.array([0.2, 0.5, 0.3], dtype))
         array([0.2, 0.5, 0.3])
         >>> pi(np.array([0.2, -0.3, 2], dtype))
@@ -58,10 +59,11 @@ class Kernel(ABC):
         """Calculate a stationary distribution of a right stochastic
         matrix.
 
-        >>> kernel = FloatingPointKernel()
-        >>> np = kernel.numpy
-        >>> dtype = kernel.data_type
-        >>> pi = kernel.stationary_distribution
+        >>> import noregret as nr
+        >>> ker = nr.FPKer()
+        >>> np = ker.numpy
+        >>> dtype = ker.data_type
+        >>> pi = ker.stationary_distribution
         >>> pi(np.array([[1, 1, 1], [3, 0, 0], [3, 0, 0]], dtype) / 3)
         array([0.6, 0.2, 0.2])
 
@@ -86,9 +88,10 @@ class Kernel(ABC):
         """Return the standard basis vector for a given dimension in a
         given-dimensional vector space.
 
-        >>> kernel = FloatingPointKernel()
-        >>> np = kernel.numpy
-        >>> e = kernel.standard_basis
+        >>> import noregret as nr
+        >>> ker = nr.FPKer()
+        >>> np = ker.numpy
+        >>> e = ker.standard_basis
         >>> e(3, 0)
         array([1., 0., 0.])
         >>> e(3, 1)

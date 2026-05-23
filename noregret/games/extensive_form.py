@@ -1,7 +1,7 @@
 """Module for extensive-form games (EFGs)."""
 from collections import defaultdict
 from dataclasses import dataclass
-from functools import partial, singledispatch
+from functools import partial
 from io import BytesIO
 from itertools import starmap
 
@@ -10,13 +10,12 @@ from orjson import dumps, loads
 from scipy.sparse import lil_array, load_npz, save_npz
 
 from noregret.games.black_box import BlackBoxGame
-from noregret.games.games import Game
 from noregret.games.multilinear import (
     MultilinearGame,
     TwoPlayerMultilinearGame,
     TwoPlayerZeroSumMultilinearGame,
 )
-from noregret.games.normal_form.games import (
+from noregret.games.normal_form import (
     NormalFormGame,
     TwoPlayerNormalFormGame,
     TwoPlayerZeroSumNormalFormGame,
@@ -155,10 +154,10 @@ class TwoPlayerZeroSumExtensiveFormGame(
         return u, neg_v
 
 
-def _nfg2efg(kernel, game, decision_points='p{}'.format):
-    np = kernel.numpy
-    scipy = kernel.scipy
-    dtype = kernel.data_type
+def _nfg2efg(ker, game, decision_points='p{}'.format):
+    np = ker.numpy
+    scipy = ker.scipy
+    dtype = ker.data_type
 
     if isinstance(game, TwoPlayerZeroSumNormalFormGame):
         type_ = TwoPlayerZeroSumExtensiveFormGame
@@ -181,36 +180,30 @@ def _nfg2efg(kernel, game, decision_points='p{}'.format):
 
     for i, A_j in enumerate(game.actions):
         j = decision_points(i)
-        sfp = SequenceFormPolytope(kernel, {j: A_j}, {j: None})
+        sfp = SequenceFormPolytope(ker, {j: A_j}, {j: None})
 
         sfps.append(sfp)
 
     sfps = tuple(sfps)
 
-    return type_(kernel, payoffs, sfps)
+    return type_(ker, payoffs, sfps)
 
 
-def _bbg2efg(kernel, game):
-    scipy = kernel.scipy
-    dtype = kernel.data_type
+def _bbg2efg(ker, game):
+    np = game.kernel.numpy
+    dtype = game.kernel.data_type
     P = range(game.player_count)
     A_js = [defaultdict(OrderedSet) for _ in P]
     p_js = [{} for _ in P]
-    raw_payoffs = [defaultdict(int) for _ in P]
+    raw_payoffs = defaultdict(int)
 
     def dfs(h, p, seqs, us):
         A_j, h_primes = game.actions_and_children(h)
         i = game.player(h)
-        us = us.copy()
-
-        for i_prime, v in enumerate(game.utilities(h)):
-            us[i_prime] += v
+        us = us + game.utilities(h)
 
         if not A_j:
-            seqs = tuple(seqs)
-
-            for i_prime, u in enumerate(us):
-                raw_payoffs[i_prime][seqs] += p * u
+            raw_payoffs[tuple(seqs)] += p * us
         elif i is None:
             p_primes = game.chance_probabilities(h)
 
@@ -228,9 +221,11 @@ def _bbg2efg(kernel, game):
                 A_js[i][j].add(a)
                 dfs(h_prime, p, next_seqs, us)
 
-    dfs(game.root_node, 1, [None for _ in P], [0 for _ in P])
+    dfs(game.root_node, 1, [None for _ in P], np.zeros(len(P), dtype))
 
-    SFP = partial(SequenceFormPolytope, kernel)
+    scipy = ker.scipy
+    dtype = ker.data_type
+    SFP = partial(SequenceFormPolytope, ker)
     sfps = tuple(starmap(SFP, zip(A_js, p_js)))
     dimensions = tuple(sfp.column_count for sfp in sfps)
 
@@ -238,25 +233,25 @@ def _bbg2efg(kernel, game):
         type_ = TwoPlayerZeroSumExtensiveFormGame
         payoffs = lil_array(dimensions, dtype=dtype)
 
-        for seqs, u in raw_payoffs[0].items():
+        for seqs, us in raw_payoffs.items():
             indices = []
 
             for sfp, seq in zip(sfps, seqs):
                 indices.append(sfp.column(seq))
 
-            payoffs[tuple(indices)] = u
+            payoffs[tuple(indices)] = us[0]
 
         payoffs = scipy.sparse.csr_array(payoffs)
     else:
         raise NotImplementedError
 
-    return type_(kernel, payoffs, sfps)
+    return type_(ker, payoffs, sfps)
 
 
-@singledispatch
 def to_extensive_form_game(kernel, game):
     """Convert a given game to an extensive-form game.
 
+    :param kernel: Kernel.
     :param game: Game.
     :return: Extensive-form game.
     """
@@ -268,8 +263,3 @@ def to_extensive_form_game(kernel, game):
         raise ValueError('unknown game')
 
     return game
-
-
-@to_extensive_form_game.register
-def _(game: Game):
-    return to_extensive_form_game(game.kernel, game)

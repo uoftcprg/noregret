@@ -72,6 +72,8 @@ CFR2 = CounterfactualRegretMinimization2
 """Alias for :class:`noregret.CounterfactualRegretMinimization2`."""
 CFR_plus = CounterfactualRegretMinimizationPlus
 """Alias for :class:`noregret.CounterfactualRegretMinimizationPlus`."""
+CUDAKer = CUDAKernel
+"""Alias for :class:`CUDAKernel`."""
 DCFR = DiscountedCounterfactualRegretMinimization
 """Alias for
 :class:`noregret.DiscountedCounterfactualRegretMinimization`.
@@ -86,6 +88,8 @@ EFG = ExtensiveFormGame
 """Alias for :class:`noregret.ExtensiveFormGame`."""
 ER = EuclideanRegularization
 """Alias for :class:`noregret.EuclideanRegularization`."""
+FPKer = FloatingPointKernel
+"""Alias for :class:`FloatingPointKernel`."""
 FTRL = FollowTheRegularizedLeader
 """Alias for :class:`noregret.FollowTheRegularizedLeader`."""
 lp = linear_programming
@@ -125,6 +129,7 @@ __all__ = (
     'CounterfactualRegretMinimization',
     'CounterfactualRegretMinimization2',
     'CounterfactualRegretMinimizationPlus',
+    'CUDAKer',
     'CUDAKernel',
     'DCFR',
     'DiscountedCounterfactualRegretMinimization',
@@ -139,7 +144,7 @@ __all__ = (
     'ExtensiveFormGame',
     'FloatingPointKernel',
     'FollowTheRegularizedLeader',
-    'open_spiel_game',
+    'FPKer',
     'FTRL',
     'Game',
     'GiftExchangeGame',
@@ -161,6 +166,7 @@ __all__ = (
     'NormalFormGame',
     'OGD',
     'OnlineGradientDescent',
+    'open_spiel_game',
     'PrisonersDilemma',
     'ProbabilitySimplexRegretMinimizer',
     'ProbabilitySimplexSwapRegretMinimizer',

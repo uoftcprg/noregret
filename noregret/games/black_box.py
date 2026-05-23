@@ -6,10 +6,14 @@ from functools import partial
 from ordered_set import OrderedSet
 from pyspiel import GameType, load_game
 
+from noregret.kernels import Kernel
+
 
 @dataclass
 class BlackBoxGame(ABC):
     """Abstract base class for black box games."""
+    kernel: Kernel
+    """Kernel."""
 
     @property
     @abstractmethod
@@ -99,7 +103,11 @@ class BlackBoxGame(ABC):
         :param node: Node.
         :return: Utilities.
         """
-        return list(map(partial(self.utility, node), range(self.player_count)))
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        us = list(map(partial(self.utility, node), range(self.player_count)))
+
+        return np.array(us, dtype)
 
     @abstractmethod
     def information_set(self, node):
@@ -124,9 +132,12 @@ class BlackBoxGame(ABC):
         :param node: Node.
         :return: Chance probabilities.
         """
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
         A = self.actions(node)
+        ps = list(map(partial(self.chance_probability, node), A))
 
-        return list(map(partial(self.chance_probability, node), A))
+        return np.array(ps, dtype)
 
 
 @dataclass
@@ -174,25 +185,39 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
         return None if i < 0 else i
 
     def utility(self, node, player):
-        return node.player_reward(player)
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
+        return np.array(node.player_reward(player), dtype)
 
     def utilities(self, node):
-        return node.rewards()
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
+        return np.array(node.rewards(), dtype)
 
     def information_set(self, node):
         return node.information_state_string()
 
     def chance_probability(self, node, action):
-        return node.chance_outcomes()[self.actions(node).index(action)][1]
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        p = node.chance_outcomes()[self.actions(node).index(action)][1]
+
+        return np.array(p, dtype)
 
     def chance_probabilities(self, node):
-        return [p for _, p in node.chance_outcomes()]
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
+        return np.array([p for _, p in node.chance_outcomes()], dtype)
 
 
-def open_spiel_game(game):
+def open_spiel_game(kernel, game):
     """Load a game from OpenSpiel.
 
+    :param Kernel: Kernel.
     :param game: Game in OpenSpiel.
     :return: Game.
     """
-    return _OpenSpielBlackBoxGame(game)
+    return _OpenSpielBlackBoxGame(kernel, game)

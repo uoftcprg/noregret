@@ -1,19 +1,19 @@
-"""Complete Problem 3.1 of Homework 1 from CMU graduate course 15-888:
-Computational Game Solving.
+"""Solution to Problem 3.1 of Homework 1 from CMU SCS CSD graduate
+course 15-888: Computational Game Solving.
 """
 import noregret as nr
 
-KERNEL = nr.FloatingPointKernel()
+KER = nr.FPKer()
 GAMES = {
-    'Rock paper superscissors': nr.RockPaperSuperscissors(KERNEL),
-    'Kuhn poker': nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-    'Leduc poker': nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+    'Rock paper superscissors': nr.RockPaperSuperscissors(KER),
+    'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+    'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
 }
 
 
 def main():
     for name, game in GAMES.items():
-        x, y = nr.linear_programming(game)
+        x, y = nr.lp(game)
         v = game.expected_row_utility(x, y)
 
         print(f'{name}:', v)

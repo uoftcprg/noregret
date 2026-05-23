@@ -2,7 +2,7 @@
 NoRegret
 ========
 
-NoRegret is an open-source software library for no-regret learning dynamics and computational game solving, developed by the Universal, Open, Free, and Transparent Computer Poker Research Group. NoRegret implements an extensive array of regret minimizers and game solvers, and also supports GPU-acceleration. The library can be used in a variety of use cases, from solving games to conducting research in online convex optimization. NoRegret's reliability has been established through extensive doctests and unit tests, achieving 95% code coverage.
+NoRegret is an open-source software library for no-regret learning dynamics and computational game solving, developed by the Universal, Open, Free, and Transparent Computer Poker Research Group. NoRegret implements an extensive array of regret minimizers and game solvers, and also supports GPU-acceleration. The library can be used in a variety of use cases, from solving games to conducting research in online convex optimization. NoRegret's reliability has been established through extensive doctests and unit tests, achieving 96% code coverage.
 
 Features
 --------
@@ -34,18 +34,18 @@ The code snippet below demonstrates how one can solve games via regret minimizat
 
    from functools import partial
    from math import inf
-   
+
    from tqdm import tqdm
    import matplotlib.pyplot as plt
    import noregret as nr
    import pandas as pd
    import seaborn as sns
-   
-   KERNEL = nr.FloatingPointKernel()
+
+   KER = nr.FPKer()
    GAMES = {
-       'Rock paper superscissors': nr.to_efg(nr.RockPaperSuperscissors(KERNEL)),
-       'Kuhn poker': nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-       'Leduc poker': nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+       'Rock paper superscissors': nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
+       'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+       'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
    }
    PARAMETERS = {
        'CFR': (nr.CFR, False, False),
@@ -54,35 +54,35 @@ The code snippet below demonstrates how one can solve games via regret minimizat
        'PCFR+': (partial(nr.CFR_plus, gamma=2), True, True),
        'PCFR+*': (partial(nr.CFR_plus, gamma=inf), True, True),
    }
-   
-   
+
+
    def main():
        for name, game in tqdm(GAMES.items()):
            iterations = []
            exploitabilities = []
            expected_utilities = []
            variants = []
-   
+
            for variant, (R_type, alt, pred) in tqdm(
                    PARAMETERS.items(),
                    leave=False,
            ):
-               R_row = R_type(KERNEL, game.row_sequence_form_polytope)
-               R_col = R_type(KERNEL, game.column_sequence_form_polytope)
-   
+               R_row = R_type(KER, game.row_sequence_form_polytope)
+               R_col = R_type(KER, game.column_sequence_form_polytope)
+
                def update():
                    t = R_row.iteration_count
                    x_bar = R_row.average_strategy
                    y_bar = R_col.average_strategy
                    epsilon = game.exploitability(x_bar, y_bar)
                    u = game.expected_row_utility(x_bar, y_bar)
-   
+
                    iterations.append(t)
                    exploitabilities.append(epsilon)
                    expected_utilities.append(u)
                    variants.append(variant)
-   
-               nr.regret_minimization(
+
+               nr.rm(
                    game,
                    R_row,
                    R_col,
@@ -91,7 +91,7 @@ The code snippet below demonstrates how one can solve games via regret minimizat
                    update=update,
                    progress_bar={'leave': False},
                )
-   
+
            data = {
                'Iteration': iterations,
                'Exploitability': exploitabilities,
@@ -99,21 +99,21 @@ The code snippet below demonstrates how one can solve games via regret minimizat
                'Variant': variants,
            }
            df = pd.DataFrame(data)
-   
+
            plt.clf()
            sns.lineplot(df, x='Iteration', y='Exploitability', hue='Variant')
            plt.xscale('log')
            plt.yscale('log')
            plt.title(f'Exploitability in {name}')
            plt.show()
-   
+
            plt.clf()
            sns.lineplot(df, x='Iteration', y='Expected utility', hue='Variant')
            plt.xscale('log')
            plt.title(f'Expected utility in {name}')
            plt.show()
-   
-   
+
+
    if __name__ == '__main__':
        main()
 
@@ -123,38 +123,34 @@ GPU-Accelerated Game Solving
 The code snippet below demonstrates how one can solve games while leveraging GPU acceleration.
 
 .. code-block:: python
-   
+
    from sys import stdout
-   
+
    from orjson import dumps, OPT_SERIALIZE_NUMPY
    import noregret as nr
-   
-   KERNEL = nr.CUDAKernel()
-   GAME = nr.to_efg(KERNEL, nr.open_spiel_game('liars_dice'))
+
+   CPU_KER = nr.FPKer()
+   GAME = nr.open_spiel_game(CPU_KER, 'liars_dice')
+   GPU_KER = nr.CUDAKer()
+   GAME = nr.to_efg(GPU_KER, GAME)
    PARAMETERS = nr.CFR, True, False
-   
-   
+
+
    def main():
        R_type, alt, pred = PARAMETERS
-       R_row = R_type(KERNEL, GAME.row_sequence_form_polytope)
-       R_col = R_type(KERNEL, GAME.column_sequence_form_polytope)
-       x_bar, y_bar = nr.regret_minimization(
-           GAME,
-           R_row,
-           R_col,
-           alternation=alt,
-           prediction=pred,
-       )
+       R_row = R_type(GPU_KER, GAME.row_sequence_form_polytope)
+       R_col = R_type(GPU_KER, GAME.column_sequence_form_polytope)
+       x_bar, y_bar = nr.rm(GAME, R_row, R_col, alternation=alt, prediction=pred)
        data = {
-           'x_bar': KERNEL.numpy.asnumpy(x_bar),
-           'y_bar': KERNEL.numpy.asnumpy(y_bar),
+           'x_bar': GPU_KER.numpy.asnumpy(x_bar),
+           'y_bar': GPU_KER.numpy.asnumpy(y_bar),
            'Exploitability': GAME.exploitability(x_bar, y_bar).item(),
            'Expected utility': GAME.expected_row_utility(x_bar, y_bar).item(),
        }
-   
+
        stdout.buffer.write(dumps(data, option=OPT_SERIALIZE_NUMPY))
-   
-   
+
+
    if __name__ == '__main__':
        main()
 
@@ -166,23 +162,23 @@ The code snippet below demonstrates how one can solve games via linear programmi
 .. code-block:: python
 
    import noregret as nr
-   
-   KERNEL = nr.FloatingPointKernel()
+
+   KER = nr.FPKer()
    GAMES = {
-       'Rock paper superscissors': nr.RockPaperSuperscissors(KERNEL),
-       'Kuhn poker': nr.to_efg(KERNEL, nr.open_spiel_game('kuhn_poker')),
-       'Leduc poker': nr.to_efg(KERNEL, nr.open_spiel_game('leduc_poker')),
+       'Rock paper superscissors': nr.RockPaperSuperscissors(KER),
+       'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
+       'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
    }
-   
-   
+
+
    def main():
        for name, game in GAMES.items():
-           x, y = nr.linear_programming(game)
+           x, y = nr.lp(game)
            v = game.expected_row_utility(x, y)
-   
+
            print(f'{name}:', v)
-   
-   
+
+
    if __name__ == '__main__':
        main()
 
@@ -236,11 +232,11 @@ If you use NoRegret in your research, please cite our library:
 .. code-block:: bibtex
 
    @misc{kim2026parallelizingcounterfactualregretminimization,
-         title={Parallelizing Counterfactual Regret Minimization}, 
+         title={Parallelizing Counterfactual Regret Minimization},
          author={Juho Kim and Tuomas Sandholm},
          year={2026},
          eprint={2605.14277},
          archivePrefix={arXiv},
          primaryClass={cs.AI},
-         url={https://arxiv.org/abs/2605.14277}, 
+         url={https://arxiv.org/abs/2605.14277},
    }

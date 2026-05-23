@@ -4,7 +4,7 @@ import noregret as nr
 
 
 class SequenceFormPolytopeTestCase(TestCase):
-    KERNELS = nr.FloatingPointKernel(), nr.CUDAKernel()
+    KERS = nr.FPKer(), nr.CUDAKer()
     ACTIONS = {'a': ['b', 'c'], 'd': ['e'], 'f': ['g', 'h'], 'i': ['j', 'k']}
     PARENT_SEQUENCES = {
         'a': None,
@@ -14,10 +14,10 @@ class SequenceFormPolytopeTestCase(TestCase):
     }
 
     def test_behavioral_form_uniform_strategy(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
+        for ker in self.KERS:
+            np = ker.numpy
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -28,11 +28,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             )
 
     def test_to_sequence_form(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -50,11 +50,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             )
 
     def test_counterfactual_utilities(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -67,11 +67,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             )
 
     def test_counterfactual_regrets(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -84,11 +84,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             )
 
     def test_normalize(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -107,11 +107,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             np.testing.assert_array_almost_equal(sfp.normalize(b), b)
 
     def test_best_response_value(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
@@ -130,11 +130,11 @@ class SequenceFormPolytopeTestCase(TestCase):
             )
 
     def test_worst_response_value(self):
-        for kernel in self.KERNELS:
-            np = kernel.numpy
-            dtype = kernel.data_type
+        for ker in self.KERS:
+            np = ker.numpy
+            dtype = ker.data_type
             sfp = nr.SequenceFormPolytope(
-                kernel,
+                ker,
                 self.ACTIONS,
                 self.PARENT_SEQUENCES,
             )
