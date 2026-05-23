@@ -1,5 +1,6 @@
 from functools import partial
 from math import inf
+from random import seed
 from unittest import main, TestCase
 
 import noregret as nr
@@ -44,12 +45,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
                             target_exploitability=self.TARGET_EXPLOITABILITY,
                             progress_bar=False,
                         )
-                        e = game.exploitability(x_bar, y_bar)
+                        epsilon = game.exploitability(x_bar, y_bar)
                         v = game.expected_row_utility(x_bar, y_bar)
 
-                        self.assertLess(e, self.TARGET_EXPLOITABILITY)
+                        self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
                         self.assertAlmostEqual(v, value, delta=self.DELTA)
-                        self.assertEqual(e.dtype, dtype)
+                        self.assertEqual(epsilon.dtype, dtype)
                         self.assertEqual(v.dtype, dtype)
 
     def test_last_iterate_convergence(self):
@@ -70,12 +71,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
                         target_exploitability=self.TARGET_EXPLOITABILITY,
                         progress_bar=False,
                     )
-                    e = game.exploitability(x_bar, y_bar)
+                    epsilon = game.exploitability(x_bar, y_bar)
                     v = game.expected_row_utility(x_bar, y_bar)
 
-                    self.assertLess(e, self.TARGET_EXPLOITABILITY)
+                    self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
                     self.assertAlmostEqual(v, value, delta=self.DELTA)
-                    self.assertEqual(e.dtype, dtype)
+                    self.assertEqual(epsilon.dtype, dtype)
                     self.assertEqual(v.dtype, dtype)
 
     def test_frequent_iterate_convergence(self):
@@ -94,12 +95,12 @@ class ProbabilitySimplexRegretMinimizationTestCase(TestCase):
                     target_exploitability=self.TARGET_EXPLOITABILITY,
                     progress_bar=False,
                 )
-                e = game.exploitability(x_bar, y_bar)
+                epsilon = game.exploitability(x_bar, y_bar)
                 v = game.expected_row_utility(x_bar, y_bar)
 
-                self.assertLess(e, self.TARGET_EXPLOITABILITY)
+                self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
                 self.assertAlmostEqual(v, value, delta=self.DELTA)
-                self.assertEqual(e.dtype, dtype)
+                self.assertEqual(epsilon.dtype, dtype)
                 self.assertEqual(v.dtype, dtype)
 
 
@@ -141,12 +142,12 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
                     target_exploitability=self.TARGET_EXPLOITABILITY,
                     progress_bar=False,
                 )
-                e = game.exploitability(x_bar, y_bar)
+                epsilon = game.exploitability(x_bar, y_bar)
                 v = game.expected_row_utility(x_bar, y_bar)
 
-                self.assertLess(e, self.TARGET_EXPLOITABILITY)
+                self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
                 self.assertAlmostEqual(v, value, delta=self.DELTA)
-                self.assertEqual(e.dtype, dtype)
+                self.assertEqual(epsilon.dtype, dtype)
                 self.assertEqual(v.dtype, dtype)
 
 
@@ -172,7 +173,7 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
                 nr.CFR(self.KER, game.column_sequence_form_polytope),
                 progress_bar=False,
             )
-            e = game.exploitability(x_bar, y_bar)
+            epsilon = game.exploitability(x_bar, y_bar)
             v = game.expected_row_utility(x_bar, y_bar)
             x_bar2, y_bar2 = nr.rm(
                 game,
@@ -180,10 +181,10 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
                 nr.CFR2(self.KER, game.column_sequence_form_polytope),
                 progress_bar=False,
             )
-            e2 = game.exploitability(x_bar2, y_bar2)
+            epsilon2 = game.exploitability(x_bar2, y_bar2)
             v2 = game.expected_row_utility(x_bar2, y_bar2)
 
-            self.assertAlmostEqual(e, e2, self.PLACES)
+            self.assertAlmostEqual(epsilon, epsilon2, self.PLACES)
             self.assertAlmostEqual(v, v2, self.PLACES)
 
             x_bar, y_bar = nr.rm(
@@ -193,7 +194,7 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
                 prediction=True,
                 progress_bar=False,
             )
-            e = game.exploitability(x_bar, y_bar)
+            epsilon = game.exploitability(x_bar, y_bar)
             v = game.expected_row_utility(x_bar, y_bar)
             x_bar2, y_bar2 = nr.rm(
                 game,
@@ -202,11 +203,60 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
                 prediction=True,
                 progress_bar=False,
             )
-            e2 = game.exploitability(x_bar2, y_bar2)
+            epsilon2 = game.exploitability(x_bar2, y_bar2)
             v2 = game.expected_row_utility(x_bar2, y_bar2)
 
-            self.assertAlmostEqual(e, e2, self.PLACES)
+            self.assertAlmostEqual(epsilon, epsilon2, self.PLACES)
             self.assertAlmostEqual(v, v2, self.PLACES)
+
+
+class StochasticRegretMinimizationTestCase(TestCase):
+    KER = nr.FPKer()
+    GAME = nr.open_spiel_game(KER, 'kuhn_poker')
+    SAMPLE_COUNT = 100000
+    TARGET_EXPLOITABILITY = 1e-1
+    SEED = 42
+
+    def test_external_sampling(self):
+        assert self.GAME.is_two_player and self.GAME.is_zero_sum
+
+        seed(self.SEED)
+
+        R = nr.MCCFR(self.KER, self.GAME)
+        sigma = nr.stochastic_rm(
+            self.GAME,
+            R,
+            alternation=True,
+            sample_count=self.SAMPLE_COUNT,
+            progress_bar=False,
+        )
+        epsilon = self.GAME.exploitability(sigma)
+
+        self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
+
+    def test_outcome_sampling(self):
+        assert self.GAME.is_two_player and self.GAME.is_zero_sum
+
+        seed(self.SEED)
+
+        R = nr.MCCFR(
+            self.KER,
+            self.GAME,
+            reference_strategy_profile=nr.UniformStrategyProfile(
+                self.KER,
+                self.GAME,
+            ),
+        )
+        sigma = nr.stochastic_rm(
+            self.GAME,
+            R,
+            alternation=True,
+            sample_count=self.SAMPLE_COUNT,
+            progress_bar=False,
+        )
+        epsilon = self.GAME.exploitability(sigma)
+
+        self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
 
 
 if __name__ == '__main__':

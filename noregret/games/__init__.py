@@ -1,5 +1,10 @@
 """Module for games."""
-from noregret.games.black_box import BlackBoxGame, open_spiel_game
+from noregret.games.black_box import (
+    BlackBoxGame,
+    open_spiel_game,
+    StrategyProfile,
+    UniformStrategyProfile,
+)
 from noregret.games.extensive_form import (
     ExtensiveFormGame,
     to_extensive_form_game,
@@ -49,6 +54,7 @@ __all__ = (
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',
     'StagHunt',
+    'StrategyProfile',
     'to_extensive_form_game',
     'TwoPlayerExtensiveFormGame',
     'TwoPlayerGame',
@@ -58,4 +64,5 @@ __all__ = (
     'TwoPlayerZeroSumGame',
     'TwoPlayerZeroSumMultilinearGame',
     'TwoPlayerZeroSumNormalFormGame',
+    'UniformStrategyProfile',
 )

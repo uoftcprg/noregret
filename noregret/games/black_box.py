@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from functools import partial
 
 from ordered_set import OrderedSet
-from pyspiel import GameType, load_game
+from pyspiel import exploitability, GameType, load_game
 
 from noregret.kernels import Kernel
 
@@ -139,6 +139,12 @@ class BlackBoxGame(ABC):
 
         return np.array(ps, dtype)
 
+    def exploitability(self, strategy_profile):
+        if not self.is_two_player or not self.is_zero_sum:
+            raise ValueError('not 2p0s')
+
+        raise NotImplementedError
+
 
 @dataclass
 class _OpenSpielBlackBoxGame(BlackBoxGame):
@@ -167,17 +173,14 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
         return node.child(node.string_to_action(action))
 
     def children(self, node):
-        return list(node.child(a) for a in node.legal_actions())
+        return list(map(node.child, node.legal_actions()))
 
     def actions_and_children(self, node):
-        actions = []
-        children = []
+        A = node.legal_actions()
+        actions = OrderedSet(map(node.action_to_string, A))
+        children = list(map(node.child, A))
 
-        for a in node.legal_actions():
-            actions.append(node.action_to_string(a))
-            children.append(node.child(a))
-
-        return OrderedSet(actions), children
+        return actions, children
 
     def player(self, node):
         i = node.current_player()
@@ -212,6 +215,27 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
 
         return np.array([p for _, p in node.chance_outcomes()], dtype)
 
+    def _sigma(self, strategy_profile, h, sigma):
+        A = h.legal_actions()
+        h_primes = list(map(h.child, A))
+        i = self.player(h)
+
+        if A and i is not None and (j := self.information_set(h)) not in sigma:
+            sigma[j] = list(zip(A, strategy_profile(h).tolist()))
+
+        for h_prime in h_primes:
+            self._sigma(strategy_profile, h_prime, sigma)
+
+    def _sigma2(self, strategy_profile):
+        sigma = {}
+
+        self._sigma(strategy_profile, self.root_node, sigma)
+
+        return sigma
+
+    def exploitability(self, strategy_profile):
+        return exploitability(self._game, self._sigma2(strategy_profile))
+
 
 def open_spiel_game(kernel, game):
     """Load a game from OpenSpiel.
@@ -221,3 +245,28 @@ def open_spiel_game(kernel, game):
     :return: Game.
     """
     return _OpenSpielBlackBoxGame(kernel, game)
+
+
+@dataclass
+class StrategyProfile(ABC):
+    """Abstract base class for strategy profiles."""
+    kernel: Kernel
+    """Kernel."""
+    game: BlackBoxGame
+    """Game."""
+
+    @abstractmethod
+    def __call__(self, node):
+        pass
+
+
+@dataclass
+class UniformStrategyProfile(StrategyProfile):
+    """Class for uniform strategy profiles."""
+
+    def __call__(self, node):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        n = len(self.game.actions(node))
+
+        return np.full(n, 1 / n, dtype)

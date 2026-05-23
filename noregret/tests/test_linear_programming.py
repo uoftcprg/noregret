@@ -23,12 +23,12 @@ class LinearProgrammingTestCase(TestCase):
 
         for game, value in self.GAME_VALUES:
             x, y = nr.lp(game)
-            e = game.exploitability(x, y)
+            epsilon = game.exploitability(x, y)
             v = game.expected_row_utility(x, y)
 
-            self.assertAlmostEqual(e, 0)
+            self.assertAlmostEqual(epsilon, 0)
             self.assertAlmostEqual(v, value)
-            self.assertEqual(e.dtype, dtype)
+            self.assertEqual(epsilon.dtype, dtype)
             self.assertEqual(v.dtype, dtype)
 
 

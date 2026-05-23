@@ -24,6 +24,10 @@ from noregret.regret_minimizers.sequence_form_polytopes import (
     DiscountedCounterfactualRegretMinimization,
     SequenceFormPolytopeRegretMinimizer,
 )
+from noregret.regret_minimizers.stochastic import (
+    MonteCarloCounterfactualRegretMinimization,
+    StochasticRegretMinimizer,
+)
 
 __all__ = (
     'BlumMansour',
@@ -36,6 +40,7 @@ __all__ = (
     'EuclideanRegularization',
     'FollowTheRegularizedLeader',
     'MirrorDescent',
+    'MonteCarloCounterfactualRegretMinimization',
     'MultiplicativeWeightsUpdate',
     'OnlineGradientDescent',
     'ProbabilitySimplexRegretMinimizer',
@@ -44,5 +49,6 @@ __all__ = (
     'RegretMatchingPlus',
     'RegretMinimizer',
     'SequenceFormPolytopeRegretMinimizer',
+    'StochasticRegretMinimizer',
     'SwapRegretMinimizer',
 )

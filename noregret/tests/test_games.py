@@ -197,6 +197,19 @@ class BlackBoxGameTestCase(TestCase):
 
             np.testing.assert_equal(ps, ps2)
 
+    def test_exploitability(self):
+        for game in self.GAMES:
+            sigma = nr.UniformStrategyProfile(self.KER, game)
+            epsilon = game.exploitability(sigma)
+
+            game = nr.to_efg(self.KER, game)
+            sfps = game.sequence_form_polytopes
+            bs = [sfp.behavioral_form_uniform_strategy for sfp in sfps]
+            sigma = [sfp.to_sequence_form(b) for sfp, b in zip(sfps, bs)]
+            epsilon2 = game.exploitability(*sigma)
+
+            self.assertAlmostEqual(epsilon, epsilon2)
+
 
 if __name__ == '__main__':
     main()  # pragma: no cover

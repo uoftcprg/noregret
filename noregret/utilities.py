@@ -1,5 +1,6 @@
 """Module for utilities."""
 from importlib import import_module
+from random import choices
 
 
 def import_object(object_path):
@@ -34,3 +35,16 @@ def tuple_or_none(values):
     :return: Tuple or ``None``.
     """
     return None if values is None else tuple(values)
+
+
+def sample(values, probabilities):
+    """Sample a random value as per the probabilities.
+
+    >>> sample(range(5), [0, 0, 1, 0, 0])
+    2
+
+    :param values: Values to be sampled from.
+    :param probabilities: The probabilities of sampling each value.
+    :return: The sampled value.
+    """
+    return choices(values, probabilities)[0]

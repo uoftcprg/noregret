@@ -18,6 +18,7 @@ from noregret.games import (
     RockPaperScissorsPlus,
     RockPaperSuperscissors,
     StagHunt,
+    StrategyProfile,
     to_extensive_form_game,
     TwoPlayerExtensiveFormGame,
     TwoPlayerGame,
@@ -27,6 +28,7 @@ from noregret.games import (
     TwoPlayerZeroSumGame,
     TwoPlayerZeroSumMultilinearGame,
     TwoPlayerZeroSumNormalFormGame,
+    UniformStrategyProfile,
 )
 from noregret.kernels import (
     CUDAKernel,
@@ -46,6 +48,7 @@ from noregret.regret_minimizers import (
     EuclideanRegularization,
     FollowTheRegularizedLeader,
     MirrorDescent,
+    MonteCarloCounterfactualRegretMinimization,
     MultiplicativeWeightsUpdate,
     OnlineGradientDescent,
     ProbabilitySimplexRegretMinimizer,
@@ -54,15 +57,17 @@ from noregret.regret_minimizers import (
     RegretMatchingPlus,
     RegretMinimizer,
     SequenceFormPolytopeRegretMinimizer,
+    StochasticRegretMinimizer,
     SwapRegretMinimizer,
 )
 from noregret.sequence_form_polytopes import SequenceFormPolytope
 from noregret.solvers import (
     linear_programming,
     regret_minimization,
+    stochastic_regret_minimization,
     symmetric_regret_minimization,
 )
-from noregret.utilities import import_object, tuple_or_none
+from noregret.utilities import import_object, sample, tuple_or_none
 
 BM = BlumMansour
 """Alias for :class:`noregret.BlumMansour`."""
@@ -94,6 +99,10 @@ FTRL = FollowTheRegularizedLeader
 """Alias for :class:`noregret.FollowTheRegularizedLeader`."""
 lp = linear_programming
 """Alias for :func:`noregret.linear_programming`."""
+MCCFR = MonteCarloCounterfactualRegretMinimization
+"""Alias for
+:class:`noregret.MonteCarloCounterfactualRegretMinimization`.
+"""
 MD = MirrorDescent
 """Alias for :class:`noregret.MirrorDescent`."""
 MWU = MultiplicativeWeightsUpdate
@@ -112,6 +121,8 @@ RM = RegretMatching
 """Alias for :class:`noregret.RegretMatching`."""
 rm = regret_minimization
 """Alias for :func:`noregret.regret_minimization`."""
+stochastic_rm = stochastic_regret_minimization
+"""Alias for :func:`noregret.stochastic_regret_minimization`."""
 symmetric_rm = symmetric_regret_minimization
 """Alias for :func:`noregret.symmetric_regret_minimization`."""
 to_efg = to_extensive_form_game
@@ -155,8 +166,10 @@ __all__ = (
     'lp',
     'MatchingPennies',
     'matrix_game',
+    'MCCFR',
     'MD',
     'MirrorDescent',
+    'MonteCarloCounterfactualRegretMinimization',
     'MultilinearGame',
     'MultiplicativeWeightsUpdate',
     'MWU',
@@ -181,10 +194,15 @@ __all__ = (
     'RockPaperScissors',
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',
+    'sample',
     'SequenceFormPolytope',
     'SequenceFormPolytopeRegretMinimizer',
     'Serializable',
     'StagHunt',
+    'stochastic_regret_minimization',
+    'StochasticRegretMinimizer',
+    'stochastic_rm',
+    'StrategyProfile',
     'SwapRegretMinimizer',
     'symmetric_regret_minimization',
     'symmetric_rm',
@@ -199,4 +217,5 @@ __all__ = (
     'TwoPlayerZeroSumGame',
     'TwoPlayerZeroSumMultilinearGame',
     'TwoPlayerZeroSumNormalFormGame',
+    'UniformStrategyProfile',
 )

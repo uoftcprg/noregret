@@ -178,9 +178,9 @@ def _nfg2efg(ker, game, decision_points='p{}'.format):
     payoffs = scipy.sparse.csr_array(payoffs)
     sfps = []
 
-    for i, A_j in enumerate(game.actions):
+    for i, A in enumerate(game.actions):
         j = decision_points(i)
-        sfp = SequenceFormPolytope(ker, {j: A_j}, {j: None})
+        sfp = SequenceFormPolytope(ker, {j: A}, {j: None})
 
         sfps.append(sfp)
 
@@ -198,11 +198,11 @@ def _bbg2efg(ker, game):
     raw_payoffs = defaultdict(int)
 
     def dfs(h, p, seqs, us):
-        A_j, h_primes = game.actions_and_children(h)
+        A, h_primes = game.actions_and_children(h)
         i = game.player(h)
         us = us + game.utilities(h)
 
-        if not A_j:
+        if not A:
             raw_payoffs[tuple(seqs)] += p * us
         elif i is None:
             p_primes = game.chance_probabilities(h)
@@ -214,7 +214,7 @@ def _bbg2efg(ker, game):
             p_j = seqs[i]
             p_js[i][j] = p_j
 
-            for a, h_prime in zip(A_j, h_primes):
+            for a, h_prime in zip(A, h_primes):
                 next_seqs = seqs.copy()
                 next_seqs[i] = j, a
 

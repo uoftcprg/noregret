@@ -1,6 +1,6 @@
 """Module or regret minimization."""
 from collections.abc import Iterable, Mapping
-from itertools import count
+from itertools import count, repeat
 
 from tqdm import tqdm
 
@@ -29,10 +29,6 @@ def regret_minimization(
     :param progress_bar: Whether to show a progress bar.
     :return: Average strategy profile.
     """
-    np = game.kernel.numpy
-
-    if len(regret_minimizers) != game.player_count:
-        raise ValueError('inconsistent number of regret minimizers')
 
     def average_strategy_profile():
         average_strategy_profile = []
@@ -44,6 +40,11 @@ def regret_minimization(
 
     def exploitability():
         return game.exploitability(*average_strategy_profile())
+
+    np = game.kernel.numpy
+
+    if len(regret_minimizers) != game.player_count:
+        raise ValueError('inconsistent number of regret minimizers')
 
     if iteration_count is None or np.isposinf(iteration_count):
         iterations = count()
@@ -57,24 +58,24 @@ def regret_minimization(
     elif isinstance(progress_bar, Iterable):
         iterations = tqdm(iterations, *progress_bar)
 
-    s = []
+    sigma = []
 
     for R in regret_minimizers:
-        s.append(R.output(prediction))
+        sigma.append(R.output(prediction))
 
     for t in iterations:
         if alternation:
             for i, R in enumerate(regret_minimizers):
-                R.observe(game.utility(i, *s[:i], *s[i + 1:]))
+                R.observe(game.utility(i, *sigma[:i], *sigma[i + 1:]))
 
-                s[i] = R.output(prediction)
+                sigma[i] = R.output(prediction)
         else:
-            U = game.utilities(*s)
+            us = game.utilities(*sigma)
 
-            for i, (R, u) in enumerate(zip(regret_minimizers, U)):
+            for i, (R, u) in enumerate(zip(regret_minimizers, us)):
                 R.observe(u)
 
-                s[i] = R.output(prediction)
+                sigma[i] = R.output(prediction)
 
         if not checkpoints or t in checkpoints:
             if update is not None:
@@ -116,18 +117,17 @@ def symmetric_regret_minimization(
     :param progress_bar: Whether to show a progress bar.
     :return: Average strategy profile.
     """
+
+    def average_strategy_profile():
+        return [regret_minimizer.average_strategy] * game.player_count
+
+    def exploitability():
+        return game.exploitability(*average_strategy_profile())
+
     np = game.kernel.numpy
 
     if not game.is_symmetric:
         raise ValueError('game is asymmetric')
-
-    R = regret_minimizer
-
-    def average_strategy_profile():
-        return [R.average_strategy] * game.player_count
-
-    def exploitability():
-        return game.exploitability(*average_strategy_profile())
 
     if iteration_count is None or np.isposinf(iteration_count):
         iterations = count()
@@ -141,12 +141,14 @@ def symmetric_regret_minimization(
     elif isinstance(progress_bar, Iterable):
         iterations = tqdm(iterations, *progress_bar)
 
-    s_neg_1 = [R.output(prediction)] * (game.player_count - 1)
+    sigma_1 = regret_minimizer.output(prediction)
 
     for t in iterations:
-        R.observe(game.utility(0, *s_neg_1))
+        u = game.utility(0, *repeat(sigma_1, game.player_count - 1))
 
-        s_neg_1 = [R.output(prediction)] * (game.player_count - 1)
+        regret_minimizer.observe(u)
+
+        sigma_1 = regret_minimizer.output(prediction)
 
         if not checkpoints or t in checkpoints:
             if update is not None:
@@ -164,3 +166,62 @@ def symmetric_regret_minimization(
                 break
 
     return average_strategy_profile()
+
+
+def stochastic_regret_minimization(
+        game,
+        regret_minimizer,
+        alternation=False,
+        sample_count=1000000,
+        checkpoints=(),
+        update=None,
+        progress_bar=True,
+):
+    """Solve a game using stochastic regret minimization.
+
+    :param game: Game.
+    :param regret_minimizer: Regret minimizer.
+    :param alternation: Whether to alternate, defaults to ``True''.
+    :param sample_count: Number of samples, defaults to ``1000000''.
+    :param checkpoints: Checkpoints.
+    :param update: Update.
+    :param progress_bar: Whether to show a progress bar.
+    :return: Average action probabilities.
+    """
+    np = game.kernel.numpy
+
+    if sample_count is None or np.isposinf(sample_count):
+        samples = count()
+    else:
+        samples = range(sample_count)
+
+    if progress_bar is True:
+        samples = tqdm(samples)
+    elif isinstance(progress_bar, Mapping):
+        samples = tqdm(samples, **progress_bar)
+    elif isinstance(progress_bar, Iterable):
+        samples = tqdm(samples, *progress_bar)
+
+    for s in samples:
+        if alternation:
+            for i in range(game.player_count):
+                regret_minimizer.observe(regret_minimizer.sample(i))
+        else:
+            uss = []
+
+            for i in range(game.player_count):
+                uss.append(regret_minimizer.sample(i))
+
+            for us in uss:
+                regret_minimizer.observe(us)
+
+        if not checkpoints or s in checkpoints:
+            if update is not None:
+                status = update()
+            else:
+                status = False
+
+            if status:
+                break
+
+    return regret_minimizer.average_action_probabilities
