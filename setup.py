@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='gpugt',
-    version='0.0.0.dev2',
+    version='0.0.0.dev3',
     description=(
         'An open-source Python implementation of GPU-accelerated'
         ' counterfactual regret minimization'
