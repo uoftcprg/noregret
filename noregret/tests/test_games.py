@@ -6,6 +6,7 @@ import noregret as nr
 
 class GameTestCaseMixin(ABC):
     KER = None
+    GAMES = None
 
     @abstractmethod
     def uniform_strategy_profile(self, game):
