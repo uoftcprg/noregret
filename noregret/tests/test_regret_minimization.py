@@ -1,6 +1,5 @@
 from functools import partial
 from math import inf
-from random import seed
 from unittest import main, TestCase
 
 import noregret as nr
@@ -218,9 +217,11 @@ class StochasticRegretMinimizationTestCase(TestCase):
     SEED = 42
 
     def test_external_sampling(self):
+        np = self.KER.numpy
+
         assert self.GAME.is_two_player and self.GAME.is_zero_sum
 
-        seed(self.SEED)
+        np.random.seed(self.SEED)
 
         R = nr.MCCFR(self.KER, self.GAME)
         sigma = nr.stochastic_rm(
@@ -235,9 +236,11 @@ class StochasticRegretMinimizationTestCase(TestCase):
         self.assertLess(epsilon, self.TARGET_EXPLOITABILITY)
 
     def test_outcome_sampling(self):
+        np = self.KER.numpy
+
         assert self.GAME.is_two_player and self.GAME.is_zero_sum
 
-        seed(self.SEED)
+        np.random.seed(self.SEED)
 
         R = nr.MCCFR(
             self.KER,

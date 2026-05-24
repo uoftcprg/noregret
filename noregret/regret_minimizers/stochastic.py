@@ -10,7 +10,6 @@ from noregret.regret_minimizers.probability_simplices import (
     ProbabilitySimplexRegretMinimizer,
     RegretMatching,
 )
-from noregret.utilities import sample
 
 
 @dataclass
@@ -105,7 +104,7 @@ class StochasticRegretMinimizer(ABC):
                 us[j] = np.array(u_primes, dtype)
                 u += us[j] @ ps
             else:
-                a = sample(A, ps)
+                a = np.random.choice(A, p=ps).item()
                 h_prime = self.game.apply(h, a)
                 u += self._external_sampling(i, us, h_prime)
 
@@ -135,7 +134,7 @@ class StochasticRegretMinimizer(ABC):
             else:
                 ps = self._action_probabilities(h)
 
-            k = sample(range(len(A)), ps)
+            k = np.random.choice(len(A), p=ps)
             a = A[k]
             h_prime = self.game.apply(h, a)
             p_prime = ps[k] * p

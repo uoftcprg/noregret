@@ -2,6 +2,7 @@
 from noregret.games.black_box import (
     BlackBoxGame,
     open_spiel_game,
+    Simulation,
     StrategyProfile,
     UniformStrategyProfile,
 )
@@ -53,6 +54,7 @@ __all__ = (
     'RockPaperScissors',
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',
+    'Simulation',
     'StagHunt',
     'StrategyProfile',
     'to_extensive_form_game',

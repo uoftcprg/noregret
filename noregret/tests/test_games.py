@@ -146,12 +146,43 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
                 self.assertEqual(sfp.parent_sequences, sfp2.parent_sequences)
 
 
+class SimulationTestCase(TestCase):
+    KER = nr.FPKer()
+
+    def test_sequences(self):
+        np = self.KER.numpy
+        dtype = self.KER.data_type
+        sim = nr.Sim(
+            self.KER,
+            (0, None, 0, 1),
+            ('', None, 'ab', 'b'),
+            ('a', 'b', 'c', 'd'),
+            np.array([1, -1], dtype),
+        )
+
+        self.assertEqual(
+            tuple(sim.sequences()),
+            (('', 'a'), ('ab', 'c'), ('b', 'd')),
+        )
+        self.assertEqual(tuple(sim.sequences(0)), (('', 'a'), ('ab', 'c')))
+        self.assertEqual(tuple(sim.sequences(1)), (('b', 'd'),))
+
+    def test_utility(self):
+        np = self.KER.numpy
+        dtype = self.KER.data_type
+        sim = nr.Sim(self.KER, (), (), (), np.array([1, -1], dtype))
+
+        self.assertEqual(sim.utility(0), 1)
+        self.assertEqual(sim.utility(1), -1)
+
+
 class BlackBoxGameTestCase(TestCase):
     KER = nr.FPKer()
     GAMES = (
         nr.open_spiel_game(KER, 'kuhn_poker'),
         nr.open_spiel_game(KER, 'leduc_poker'),
     )
+    SEED = 42
 
     def test_actions_and_children(self):
         for game in self.GAMES:
@@ -210,6 +241,16 @@ class BlackBoxGameTestCase(TestCase):
             epsilon2 = game.exploitability(*sigma)
 
             self.assertAlmostEqual(epsilon, epsilon2)
+
+    def test_simulation(self):
+        np = self.KER.numpy
+
+        for game in self.GAMES:
+            np.random.seed(self.SEED)
+
+            sigma = nr.UniformStrategyProfile(self.KER, game)
+
+            game.simulate(sigma)
 
 
 if __name__ == '__main__':

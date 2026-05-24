@@ -1,6 +1,5 @@
 """Run MCCFR."""
 from functools import partial
-from random import seed
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -37,7 +36,7 @@ def main():
             node_visit_counts.append(n)
             exploitabilities.append(epsilon)
 
-        seed(SEED)
+        np.random.seed(SEED)
         nr.stochastic_rm(
             GAME,
             R,

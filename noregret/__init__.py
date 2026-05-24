@@ -17,6 +17,7 @@ from noregret.games import (
     RockPaperScissors,
     RockPaperScissorsPlus,
     RockPaperSuperscissors,
+    Simulation,
     StagHunt,
     StrategyProfile,
     to_extensive_form_game,
@@ -67,7 +68,7 @@ from noregret.solvers import (
     stochastic_regret_minimization,
     symmetric_regret_minimization,
 )
-from noregret.utilities import import_object, sample, tuple_or_none
+from noregret.utilities import import_object, tuple_or_none
 
 BM = BlumMansour
 """Alias for :class:`noregret.BlumMansour`."""
@@ -121,6 +122,8 @@ RM = RegretMatching
 """Alias for :class:`noregret.RegretMatching`."""
 rm = regret_minimization
 """Alias for :func:`noregret.regret_minimization`."""
+Sim = Simulation
+"""Alias for :class:`noregret.Simulation`."""
 stochastic_rm = stochastic_regret_minimization
 """Alias for :func:`noregret.stochastic_regret_minimization`."""
 symmetric_rm = symmetric_regret_minimization
@@ -194,10 +197,11 @@ __all__ = (
     'RockPaperScissors',
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',
-    'sample',
     'SequenceFormPolytope',
     'SequenceFormPolytopeRegretMinimizer',
     'Serializable',
+    'Sim',
+    'Simulation',
     'StagHunt',
     'stochastic_regret_minimization',
     'StochasticRegretMinimizer',
