@@ -234,6 +234,18 @@ class BlackBoxGameTestCase(TestCase):
             sigma = nr.UniformStrategyProfile(self.KER, game)
             epsilon = game.exploitability(sigma)
 
+            sigma = nr.TupleStrategyProfile(
+                self.KER,
+                game,
+                (
+                    nr.UniformStrategyProfile(self.KER, game),
+                    nr.UniformStrategyProfile(self.KER, game),
+                ),
+            )
+            epsilon2 = game.exploitability(sigma)
+
+            self.assertAlmostEqual(epsilon, epsilon2)
+
             game = nr.to_efg(self.KER, game)
             sfps = game.sequence_form_polytopes
             bs = [sfp.behavioral_form_uniform_strategy for sfp in sfps]

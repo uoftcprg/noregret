@@ -4,6 +4,7 @@ from noregret.games.black_box import (
     open_spiel_game,
     Simulation,
     StrategyProfile,
+    TupleStrategyProfile,
     UniformStrategyProfile,
 )
 from noregret.games.extensive_form import (
@@ -58,6 +59,7 @@ __all__ = (
     'StagHunt',
     'StrategyProfile',
     'to_extensive_form_game',
+    'TupleStrategyProfile',
     'TwoPlayerExtensiveFormGame',
     'TwoPlayerGame',
     'TwoPlayerMultilinearGame',

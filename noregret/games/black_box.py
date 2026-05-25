@@ -331,6 +331,9 @@ class StrategyProfile(ABC):
     game: BlackBoxGame
     """Game."""
 
+    def __post_init__(self):
+        pass
+
     @abstractmethod
     def __call__(self, node):
         pass
@@ -346,3 +349,21 @@ class UniformStrategyProfile(StrategyProfile):
         n = len(self.game.actions(node))
 
         return np.full(n, 1 / n, dtype)
+
+
+@dataclass
+class TupleStrategyProfile(StrategyProfile):
+    """Class for tuple strategy profiles."""
+    strategies: tuple[Any, ...]
+    """Strategies."""
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if len(self.strategies) != self.game.player_count:
+            raise ValueError('inconsistent number of players')
+
+    def __call__(self, node):
+        i = self.game.player(node)
+
+        return self.strategies[i](node)
