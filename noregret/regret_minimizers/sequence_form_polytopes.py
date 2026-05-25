@@ -152,15 +152,15 @@ class DiscountedCounterfactualRegretMinimization(
 ):
     """Class for discounted counterfactual regret minimization+ (DCFR)."""
     _: KW_ONLY
-    discounted_counterfactual_regrets: Any = 0.0
-    """Discounted counterfactual regrets."""
+    discounted_cumulative_counterfactual_regrets: Any = 0.0
+    """Discounted cumulative counterfactual regrets."""
 
     def _theta(self, m):
         np = self.kernel.numpy
         dtype = self.kernel.data_type
 
         if m is False:
-            theta = self.discounted_counterfactual_regrets
+            theta = self.discounted_cumulative_counterfactual_regrets
         else:
             if m is True:
                 m = self.previous_utility
@@ -169,7 +169,7 @@ class DiscountedCounterfactualRegretMinimization(
                 self.previous_behavioral_strategy,
                 m,
             )
-            theta = r + self.discounted_counterfactual_regrets
+            theta = r + self.discounted_cumulative_counterfactual_regrets
             T = self.iteration_count + 1
             theta[theta > 0] *= T ** self.alpha / (T ** self.alpha + 1)
             theta[theta < 0] *= T ** self.beta / (T ** self.beta + 1)
@@ -182,10 +182,10 @@ class DiscountedCounterfactualRegretMinimization(
     def observe(self, utility):
         super().observe(utility)
 
-        self.discounted_counterfactual_regrets += (
+        self.discounted_cumulative_counterfactual_regrets += (
             self.previous_counterfactual_regrets
         )
-        r = self.discounted_counterfactual_regrets
+        r = self.discounted_cumulative_counterfactual_regrets
         T = self.iteration_count
         r[r > 0] *= T ** self.alpha / (T ** self.alpha + 1)
         r[r < 0] *= T ** self.beta / (T ** self.beta + 1)

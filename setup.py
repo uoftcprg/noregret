@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='noregret',
-    version='0.0.0.dev11',
+    version='0.0.0.dev12',
     description='No-regret learning dynamics',
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
