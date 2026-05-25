@@ -8,6 +8,7 @@ from ordered_set import OrderedSet
 from pyspiel import exploitability, GameType, load_game
 
 from noregret.kernels import Kernel
+from noregret.sequence_form_polytopes import SequenceFormPolytope
 
 
 @dataclass
@@ -367,3 +368,46 @@ class TupleStrategyProfile(StrategyProfile):
         i = self.game.player(node)
 
         return self.strategies[i](node)
+
+
+@dataclass
+class SequenceFormStrategyProfile(StrategyProfile):
+    """Class for tuple strategy profiles."""
+    sequence_form_polytopes: tuple[SequenceFormPolytope, ...]
+    """Sequence form polytopes."""
+    strategy_profile: tuple[Any, ...]
+    """Strategy profile."""
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        if (
+                not (
+                    len(self.sequence_form_polytopes)
+                    == len(self.strategy_profile)
+                    == self.game.player_count
+                )
+        ):
+            raise ValueError('inconsistent number of players')
+
+    def __call__(self, node):
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+        i = self.game.player(node)
+        j = self.game.information_set(node)
+        A_j = self.game.actions(node)
+        ps = []
+
+        for a in A_j:
+            sfp = self.sequence_form_polytopes[i]
+            x = self.strategy_profile[i]
+
+            ps.append(x[sfp.column((j, a))])
+        ps = np.array(ps, dtype)
+
+        if np.allclose(ps, 0):
+            ps = np.full(n, 1 / n, dtype)
+        else:
+            ps /= ps.sum()
+
+        return ps

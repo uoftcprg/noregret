@@ -246,11 +246,16 @@ class BlackBoxGameTestCase(TestCase):
 
             self.assertAlmostEqual(epsilon, epsilon2)
 
-            game = nr.to_efg(self.KER, game)
-            sfps = game.sequence_form_polytopes
+            game2 = nr.to_efg(self.KER, game)
+            sfps = game2.sequence_form_polytopes
             bs = [sfp.behavioral_form_uniform_strategy for sfp in sfps]
             sigma = [sfp.to_sequence_form(b) for sfp, b in zip(sfps, bs)]
-            epsilon2 = game.exploitability(*sigma)
+            epsilon2 = game2.exploitability(*sigma)
+
+            self.assertAlmostEqual(epsilon, epsilon2)
+
+            sigma = nr.SequenceFormStrategyProfile(self.KER, game, sfps, sigma)
+            epsilon2 = game.exploitability(sigma)
 
             self.assertAlmostEqual(epsilon, epsilon2)
 
