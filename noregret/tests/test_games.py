@@ -254,7 +254,8 @@ class BlackBoxGameTestCase(TestCase):
 
             self.assertAlmostEqual(epsilon, epsilon2)
 
-            sigma = nr.SequenceFormStrategyProfile(self.KER, game, sfps, sigma)
+            seqs = [sfp.non_empty_sequences for sfp in sfps]
+            sigma = nr.SequenceFormStrategyProfile(self.KER, game, seqs, sigma)
             epsilon2 = game.exploitability(sigma)
 
             self.assertAlmostEqual(epsilon, epsilon2)

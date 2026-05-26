@@ -8,7 +8,6 @@ from ordered_set import OrderedSet
 from pyspiel import exploitability, GameType, load_game
 
 from noregret.kernels import Kernel
-from noregret.sequence_form_polytopes import SequenceFormPolytope
 
 
 @dataclass
@@ -373,8 +372,8 @@ class TupleStrategyProfile(StrategyProfile):
 @dataclass
 class SequenceFormStrategyProfile(StrategyProfile):
     """Class for tuple strategy profiles."""
-    sequence_form_polytopes: tuple[SequenceFormPolytope, ...]
-    """Sequence form polytopes."""
+    non_empty_sequences: tuple[OrderedSet[tuple[str, str]], ...]
+    """Non-empty sequences."""
     strategy_profile: tuple[Any, ...]
     """Strategy profile."""
 
@@ -383,7 +382,7 @@ class SequenceFormStrategyProfile(StrategyProfile):
 
         if (
                 not (
-                    len(self.sequence_form_polytopes)
+                    len(self.non_empty_sequences)
                     == len(self.strategy_profile)
                     == self.game.player_count
                 )
@@ -399,13 +398,14 @@ class SequenceFormStrategyProfile(StrategyProfile):
         ps = []
 
         for a in A_j:
-            sfp = self.sequence_form_polytopes[i]
-            x = self.strategy_profile[i]
+            index = self.non_empty_sequences[i].index((j, a)) + 1
 
-            ps.append(x[sfp.column((j, a))])
+            ps.append(self.strategy_profile[i][index])
+
         ps = np.array(ps, dtype)
 
         if np.allclose(ps, 0):
+            n = len(A_j)
             ps = np.full(n, 1 / n, dtype)
         else:
             ps /= ps.sum()
