@@ -56,6 +56,8 @@ def main():
     wc_times = []
     exploitabilities = []
     values = []
+    row_strategy = row_cfr.next_strategy()
+    column_strategy = column_cfr.next_strategy()
     initial_time = time()
     pbar = tqdm(total=args.total_time)
 
@@ -63,25 +65,26 @@ def main():
         begin_time = time()
 
         if args.alternate:
-            row_strategy = row_cfr.next_strategy()
-
-            if iteration > 1:
-                column_utility = game.column_utility(row_strategy)
-
-                column_cfr.observe_utility(column_utility)
-
-            column_strategy = column_cfr.next_strategy()
             row_utility = game.row_utility(column_strategy)
 
             row_cfr.observe_utility(row_utility)
-        else:
+
             row_strategy = row_cfr.next_strategy()
+
+            column_utility = game.column_utility(row_strategy)
+
+            column_cfr.observe_utility(column_utility)
+
             column_strategy = column_cfr.next_strategy()
+        else:
             row_utility = game.row_utility(column_strategy)
             column_utility = game.column_utility(row_strategy)
 
             row_cfr.observe_utility(row_utility)
             column_cfr.observe_utility(column_utility)
+
+            row_strategy = row_cfr.next_strategy()
+            column_strategy = column_cfr.next_strategy()
 
         end_time = time()
         time_ = end_time - begin_time

@@ -357,15 +357,7 @@ python scripts/plot2.py \
     1000 \
     'Kuhn poker' \
     data/kuhn-poker.csv \
-    'Leduc poker' \@misc{kim2026parallelizingcounterfactualregretminimization,
-      title={Parallelizing Counterfactual Regret Minimization}, 
-      author={Juho Kim and Tuomas Sandholm},
-      year={2026},
-      eprint={2605.14277},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2605.14277}, 
-}
+    'Leduc poker' \
     data/leduc-poker.csv \
     "Liar's dice" \
     data/liars-dice.csv \
