@@ -9,7 +9,7 @@ import pandas as pd
 import seaborn as sns
 
 KER = nr.FPKer()
-GAME = nr.open_spiel_game(KER, 'liars_dice')
+GAME = nr.OpenSpielGame(KER, 'liars_dice')
 R_types = {
     'External sampling': nr.MCCFR,
     'Outcome sampling': partial(

@@ -106,8 +106,8 @@ class ExtensiveFormGameTestCase(GameTestCaseMixin, TestCase):
         nr.to_efg(KER, nr.RockPaperScissors(KER)),
         nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)),
         nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
-        nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
-        nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
+        nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')),
+        nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
     )
 
     def uniform_strategy_profile(self, game):
@@ -179,8 +179,8 @@ class SimulationTestCase(TestCase):
 class BlackBoxGameTestCase(TestCase):
     KER = nr.FPKer()
     GAMES = (
-        nr.open_spiel_game(KER, 'kuhn_poker'),
-        nr.open_spiel_game(KER, 'leduc_poker'),
+        nr.OpenSpielGame(KER, 'kuhn_poker'),
+        nr.OpenSpielGame(KER, 'leduc_poker'),
     )
     SEED = 42
 

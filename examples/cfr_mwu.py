@@ -10,8 +10,8 @@ import seaborn as sns
 KER = nr.FPKer()
 GAMES = {
     'Rock paper superscissors': nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
-    'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
-    'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
+    'Kuhn poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')),
+    'Leduc poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
 }
 PARAMETERS = {
     'CFR': nr.CFR,

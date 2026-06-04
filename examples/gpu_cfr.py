@@ -5,7 +5,7 @@ from orjson import dumps, OPT_SERIALIZE_NUMPY
 import noregret as nr
 
 CPU_KER = nr.FPKer()
-GAME = nr.open_spiel_game(CPU_KER, 'liars_dice')
+GAME = nr.OpenSpielGame(CPU_KER, 'liars_dice')
 GPU_KER = nr.CUDAKer()
 GAME = nr.to_efg(GPU_KER, GAME)
 PARAMETERS = nr.CFR, True, False

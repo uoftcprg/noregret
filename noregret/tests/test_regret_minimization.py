@@ -110,8 +110,8 @@ class SequenceFormPolytopeRegretMinimizationTestCase(TestCase):
         (nr.to_efg(KER, nr.RockPaperScissors(KER)), 0),
         (nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)), 0),
         (nr.to_efg(KER, nr.RockPaperSuperscissors(KER)), 0),
-        (nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')), -1 / 18),
-        (nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')), -0.085606424),
+        (nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')), -1 / 18),
+        (nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')), -0.08560642418),
     )
     REGRET_MINIMIZION_PARAMETERS = (
         (partial(nr.CFR, KER), False, False),
@@ -157,8 +157,8 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
         nr.to_efg(KER, nr.RockPaperScissors(KER)),
         nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)),
         nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
-        nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
-        nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
+        nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')),
+        nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
     )
     PLACES = 2
 
@@ -211,7 +211,7 @@ class SequenceFormPolytopeRegretMinimization2TestCase(TestCase):
 
 class StochasticRegretMinimizationTestCase(TestCase):
     KER = nr.FPKer()
-    GAME = nr.open_spiel_game(KER, 'kuhn_poker')
+    GAME = nr.OpenSpielGame(KER, 'kuhn_poker')
     SAMPLE_COUNT = 100000
     TARGET_EXPLOITABILITY = 1e-1
     SEED = 42

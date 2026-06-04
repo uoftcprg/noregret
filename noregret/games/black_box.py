@@ -223,12 +223,14 @@ class BlackBoxGame(ABC):
 
 
 @dataclass
-class _OpenSpielBlackBoxGame(BlackBoxGame):
-    game: str
+class OpenSpielGame(BlackBoxGame):
+    """Class for OpenSpiel games."""
+    name: str
+    """Name."""
     _game: str = field(init=False)
 
     def __post_init__(self):
-        self._game = load_game(self.game)
+        self._game = load_game(self.name)
 
     @property
     def player_count(self):
@@ -311,16 +313,6 @@ class _OpenSpielBlackBoxGame(BlackBoxGame):
 
     def exploitability(self, strategy_profile):
         return exploitability(self._game, self._sigma2(strategy_profile))
-
-
-def open_spiel_game(kernel, game):
-    """Load a game from OpenSpiel.
-
-    :param Kernel: Kernel.
-    :param game: Game in OpenSpiel.
-    :return: Game.
-    """
-    return _OpenSpielBlackBoxGame(kernel, game)
 
 
 @dataclass

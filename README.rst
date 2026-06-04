@@ -44,8 +44,8 @@ The code snippet below demonstrates how one can solve games via regret minimizat
    KER = nr.FPKer()
    GAMES = {
        'Rock paper superscissors': nr.to_efg(KER, nr.RockPaperSuperscissors(KER)),
-       'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
-       'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
+       'Kuhn poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')),
+       'Leduc poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
    }
    PARAMETERS = {
        'CFR': (nr.CFR, False, False),
@@ -130,7 +130,7 @@ The code snippet below demonstrates how one can solve games while leveraging GPU
    import noregret as nr
 
    CPU_KER = nr.FPKer()
-   GAME = nr.open_spiel_game(CPU_KER, 'liars_dice')
+   GAME = nr.OpenSpielGame(CPU_KER, 'liars_dice')
    GPU_KER = nr.CUDAKer()
    GAME = nr.to_efg(GPU_KER, GAME)
    PARAMETERS = nr.CFR, True, False
@@ -166,8 +166,8 @@ The code snippet below demonstrates how one can solve games via linear programmi
    KER = nr.FPKer()
    GAMES = {
        'Rock paper superscissors': nr.RockPaperSuperscissors(KER),
-       'Kuhn poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'kuhn_poker')),
-       'Leduc poker': nr.to_efg(KER, nr.open_spiel_game(KER, 'leduc_poker')),
+       'Kuhn poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')),
+       'Leduc poker': nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
    }
 
 

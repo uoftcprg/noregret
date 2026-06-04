@@ -1,7 +1,7 @@
 """Module for games."""
 from noregret.games.black_box import (
     BlackBoxGame,
-    open_spiel_game,
+    OpenSpielGame,
     SequenceFormStrategyProfile,
     Simulation,
     StrategyProfile,
@@ -50,7 +50,7 @@ __all__ = (
     'matrix_game',
     'MultilinearGame',
     'NormalFormGame',
-    'open_spiel_game',
+    'OpenSpielGame',
     'PrisonersDilemma',
     'PureCoordination',
     'RockPaperScissors',
