@@ -71,7 +71,6 @@ def main():
     legend_labels = None
 
     for i, (game, ax) in enumerate(zip(GAMES, axes)):
-        ax = axes[i]
         legend = i == GAME_COUNT - 1
 
         sns.lineplot(
