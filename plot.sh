@@ -1,2 +1,2 @@
-python plot.py 1000 'data/gpu/{}.json' 'data/cpu/{}.json' 'data/cpp/{}.json' 'data/python/{}.json' figures/exploitabilities.pdf figures/exploitabilities.png
-python plot2.py 'data/gpu/{}.json' 'data/cpu/{}.json' 'data/cpp/{}.json' 'data/python/{}.json' 'data/count/{}.json' figures/spacetime.pdf figures/spacetime.png
+python plot-exploitabilities.py 1000 'data/noregret/gpu/{}.json' 'data/noregret/cpu/{}.json' 'data/open-spiel/cpp/{}.json' 'data/open-spiel/python/{}.json' 'data/liteefg/{}.json' figures/exploitabilities.pdf figures/exploitabilities.png
+python plot-spacetime.py 'data/noregret/gpu/{}.json' 'data/noregret/cpu/{}.json' 'data/open-spiel/cpp/{}.json' 'data/open-spiel/python/{}.json' 'data/liteefg/{}.json' 'data/count/{}.json' figures/spacetime.pdf figures/spacetime.png
