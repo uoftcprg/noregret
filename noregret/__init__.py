@@ -38,6 +38,7 @@ from noregret.kernels import (
     FloatingPointKernel,
     ImportedKernel,
     Kernel,
+    MKLKernel,
     Serializable,
 )
 from noregret.regret_minimizers import (
@@ -70,7 +71,7 @@ from noregret.solvers import (
     stochastic_regret_minimization,
     symmetric_regret_minimization,
 )
-from noregret.utilities import import_object, tuple_or_none
+from noregret.utilities import import_object, tuple_or_none, Wrapper
 
 BM = BlumMansour
 """Alias for :class:`noregret.BlumMansour`."""
@@ -108,6 +109,8 @@ MCCFR = MonteCarloCounterfactualRegretMinimization
 """
 MD = MirrorDescent
 """Alias for :class:`noregret.MirrorDescent`."""
+MKLKer = MKLKernel
+"""Alias for :class:`noregret.MKLKernel`."""
 MWU = MultiplicativeWeightsUpdate
 """Alias for :class:`noregret.MultiplicativeWeightsUpdate`."""
 NFG_2p0s = TwoPlayerZeroSumNormalFormGame
@@ -174,7 +177,9 @@ __all__ = (
     'MCCFR',
     'MD',
     'MirrorDescent',
+    'MKLKernel',
     'MonteCarloCounterfactualRegretMinimization',
+    'MTKer',
     'MultilinearGame',
     'MultiplicativeWeightsUpdate',
     'MWU',
@@ -226,4 +231,5 @@ __all__ = (
     'TwoPlayerZeroSumMultilinearGame',
     'TwoPlayerZeroSumNormalFormGame',
     'UniformStrategyProfile',
+    'Wrapper',
 )

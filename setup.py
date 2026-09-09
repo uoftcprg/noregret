@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='noregret',
-    version='0.0.0.dev15',
+    version='0.0.0.dev16',
     description='No-regret learning dynamics',
     long_description=open('README.rst').read(),
     long_description_content_type='text/x-rst',
@@ -51,6 +51,7 @@ setup(
         'ordered-set>=4.1.0,<5',
         'orjson>=3.11.9,<4',
         'scipy>=1.17.1,<2',
+        'sparse_dot_mkl>=0.9.10,<1',
         'tqdm>=4.67.3,<5',
     ],
     python_requires='>=3.12',

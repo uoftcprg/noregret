@@ -9,7 +9,8 @@ Features
 
 * Extensive array of regret minimizers and game solvers.
 * High-speed implementations.
-* GPU-accleration.
+* Multithreading support (MKL).
+* GPU support (CUDA).
 
 Installation
 ------------

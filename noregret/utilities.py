@@ -34,3 +34,19 @@ def tuple_or_none(values):
     :return: Tuple or ``None``.
     """
     return None if values is None else tuple(values)
+
+
+class Wrapper:
+    """Class for wrappers."""
+
+    def __init__(self, object_, **kwargs):
+        self.__object = object_
+        self.__kwargs = kwargs
+
+    def __getattr__(self, key):
+        if key in self.__kwargs:
+            value = self.__kwargs[key]
+        else:
+            value = getattr(self.__object, key)
+
+        return value

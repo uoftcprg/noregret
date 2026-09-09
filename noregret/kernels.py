@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, KW_ONLY
 from typing import Any
 
-from noregret.utilities import import_object
+from noregret.utilities import import_object, Wrapper
 
 
 @dataclass(repr=False)
@@ -129,6 +129,18 @@ class FloatingPointKernel(ImportedKernel):
     """Class for floating-point kernels."""
     numpy_module_path = 'numpy'
     scipy_module_path = 'scipy'
+
+
+@dataclass(repr=False)
+class MKLKernel(ImportedKernel):
+    """Class for MKL kernels."""
+    numpy_module_path = 'numpy'
+    scipy_module_path = 'scipy'
+
+    def __post_init__(self):
+        super().__post_init__()
+
+        self.scipy = Wrapper(self.scipy, sparse=__import__('sparse_dot_mkl'))
 
 
 @dataclass(repr=False)

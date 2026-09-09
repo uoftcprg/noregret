@@ -11,5 +11,6 @@ orjson~=3.11.9
 pandas~=3.0.3
 scipy~=1.17.1
 seaborn~=0.13.2
+sparse_dot_mkl~=0.9.10
 tqdm~=4.67.3
 twine~=6.2.0
