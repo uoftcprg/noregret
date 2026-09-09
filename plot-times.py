@@ -9,8 +9,8 @@ import seaborn as sns
 
 from utilities import iteration_times
 
-NOREGRET_GPU = 'Ours (GPU)'
-NOREGRET_CPU = 'Ours (CPU)'
+NOREGRET_CUDA = 'Ours (GPU)'
+NOREGRET_FP = 'Ours (ST-CPU)'
 
 
 def parse_args():
@@ -18,8 +18,8 @@ def parse_args():
 
     parser.add_argument('node_count', type=int)
     parser.add_argument('branching_factors')
-    parser.add_argument('noregret_gpu')
-    parser.add_argument('noregret_cpu')
+    parser.add_argument('noregret_cuda')
+    parser.add_argument('noregret_fp')
     parser.add_argument('figures', nargs='*', type=Path)
 
     return parser.parse_args()
@@ -32,28 +32,27 @@ def main():
 
     for branching_factor in branching_factors:
         nB = args.node_count, branching_factor
-        noregret_gpu = loads(open(args.noregret_gpu.format(*nB), 'rb').read())
-        noregret_cpu = loads(open(args.noregret_cpu.format(*nB), 'rb').read())
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(*nB), 'rb').read(),
+        )
+        noregret_fp = loads(open(args.noregret_fp.format(*nB), 'rb').read())
 
-        data[''].extend(repeat(NOREGRET_GPU, len(noregret_gpu['times'])))
+        data[''].extend(repeat(NOREGRET_CUDA, len(noregret_cuda['times'])))
         data['Branching factor'].extend(
             repeat(
-                noregret_gpu['branching_factor'],
-                len(noregret_gpu['times']),
+                noregret_cuda['branching_factor'],
+                len(noregret_cuda['times']),
             ),
         )
         data['Iteration time (s)'].extend(
-            iteration_times(noregret_gpu['times']),
+            iteration_times(noregret_cuda['times']),
         )
-        data[''].extend(repeat(NOREGRET_CPU, len(noregret_cpu['times'])))
+        data[''].extend(repeat(NOREGRET_FP, len(noregret_fp['times'])))
         data['Branching factor'].extend(
-            repeat(
-                noregret_cpu['branching_factor'],
-                len(noregret_cpu['times']),
-            ),
+            repeat(noregret_fp['branching_factor'], len(noregret_fp['times'])),
         )
         data['Iteration time (s)'].extend(
-            iteration_times(noregret_cpu['times']),
+            iteration_times(noregret_fp['times']),
         )
 
     sns.set_context('notebook')
