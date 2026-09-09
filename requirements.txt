@@ -1,0 +1,7 @@
+flake8~=7.3.0
+humanize~=4.15.0
+noregret~=0.0.0.dev15
+numpy~=2.4.4
+pandas[all]~=3.0.5
+pint~=0.25.3
+scipy~=1.17.1

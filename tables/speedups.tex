@@ -1,0 +1,11 @@
+\begin{tabular}{lllll}
+\toprule
+ & Operation & Ours (GPU) & Ours (CPU) & Speedup \\
+\midrule
+0 & TimedCFR.calculate_behavioral_strategy & 4.2 s & 37.8 s & 9.0 \\
+1 & TimedCFR.convert_to_sequence_form & 1.1 s & 8.3 s & 7.8 \\
+2 & TimedCFR.update_average_strategy & 81.7 ms & 2.4 s & 29.3 \\
+3 & TimedCFR.memoize_counterfactual_utility & 9.0 s & 33.8 s & 3.8 \\
+4 & TimedCFR.update_counterfactual_regrets & 584.4 ms & 5.7 s & 9.8 \\
+\bottomrule
+\end{tabular}
