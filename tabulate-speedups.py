@@ -4,16 +4,16 @@ from humanize import scientific
 from pint import UnitRegistry
 import pandas as pd
 
-NOREGRET_GPU = 'Ours (GPU)'
-NOREGRET_CPU = 'Ours (CPU)'
+NOREGRET_CUDA = 'Ours (GPU)'
+NOREGRET_FP = 'Ours (ST-CPU)'
 UREG = UnitRegistry()
 
 
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument('noregret_gpu')
-    parser.add_argument('noregret_cpu')
+    parser.add_argument('noregret_cuda')
+    parser.add_argument('noregret_fp')
     parser.add_argument('table')
 
     return parser.parse_args()
@@ -33,12 +33,12 @@ def speedup(value):
 def main():
     args = parse_args()
     df = pd.DataFrame()
-    noregret_gpu = pd.read_csv(args.noregret_gpu)
-    noregret_cpu = pd.read_csv(args.noregret_cpu)
-    df['Operation'] = noregret_gpu['Operation']
-    df[NOREGRET_GPU] = noregret_gpu['Total'].map(time)
-    df[NOREGRET_CPU] = noregret_cpu['Total'].map(time)
-    df['Speedup'] = (noregret_cpu['Total'] / noregret_gpu['Total']).map(speedup)
+    noregret_cuda = pd.read_csv(args.noregret_cuda)
+    noregret_fp = pd.read_csv(args.noregret_fp)
+    df['Operation'] = noregret_cuda['Operation']
+    df[NOREGRET_CUDA] = noregret_cuda['Total'].map(time)
+    df[NOREGRET_FP] = noregret_fp['Total'].map(time)
+    df['Speedup'] = (noregret_fp['Total'] / noregret_cuda['Total']).map(speedup)
 
     df.to_latex(args.table)
 

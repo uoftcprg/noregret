@@ -1,1 +1,1 @@
-python tabulate-speedups.py data/noregret/gpu.csv data/noregret/cpu.csv tables/speedups.tex
+python tabulate-speedups.py data/noregret/cuda.csv data/noregret/fp.csv tables/speedups.tex
