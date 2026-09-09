@@ -21,8 +21,9 @@ GAMES = (
     'battleship-3x2-2-3',
     'battleship-3x2-22-3',
 )
-NOREGRET_GPU = 'Ours (GPU)'
-NOREGRET_CPU = 'Ours (CPU)'
+NOREGRET_CUDA = 'Ours (GPU)'
+NOREGRET_MKL = 'Ours (MT-CPU)'
+NOREGRET_FP = 'Ours (ST-CPU)'
 OPEN_SPIEL_CPP = 'OpenSpiel (C++)'
 OPEN_SPIEL_PYTHON = 'OpenSpiel (Python)'
 LITEEFG = 'LiteEFG'
@@ -31,8 +32,9 @@ LITEEFG = 'LiteEFG'
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument('noregret_gpu')
-    parser.add_argument('noregret_cpu')
+    parser.add_argument('noregret_cuda')
+    parser.add_argument('noregret_mkl')
+    parser.add_argument('noregret_fp')
     parser.add_argument('open_spiel_cpp')
     parser.add_argument('open_spiel_python')
     parser.add_argument('liteefg')
@@ -48,8 +50,11 @@ def main():
     space = defaultdict(list)
 
     for game in tqdm(GAMES):
-        noregret_gpu = loads(open(args.noregret_gpu.format(game), 'rb').read())
-        noregret_cpu = loads(open(args.noregret_cpu.format(game), 'rb').read())
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        noregret_mkl = loads(open(args.noregret_mkl.format(game), 'rb').read())
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
         open_spiel_cpp = loads(
             open(args.open_spiel_cpp.format(game), 'rb').read(),
         )
@@ -60,15 +65,20 @@ def main():
         count = loads(open(args.count.format(game), 'rb').read())
         n = count['node_count']
 
-        time[''].append(NOREGRET_GPU)
+        time[''].append(NOREGRET_CUDA)
         time['Game size (# nodes)'].append(n)
         time['Iteration time (s)'].append(
-            iteration_time(noregret_gpu['times'])[0],
+            iteration_time(noregret_cuda['times'])[0],
         )
-        time[''].append(NOREGRET_CPU)
+        time[''].append(NOREGRET_MKL)
         time['Game size (# nodes)'].append(n)
         time['Iteration time (s)'].append(
-            iteration_time(noregret_cpu['times'])[0],
+            iteration_time(noregret_mkl['times'])[0],
+        )
+        time[''].append(NOREGRET_FP)
+        time['Game size (# nodes)'].append(n)
+        time['Iteration time (s)'].append(
+            iteration_time(noregret_fp['times'])[0],
         )
         time[''].append(OPEN_SPIEL_CPP)
         time['Game size (# nodes)'].append(n)
@@ -84,13 +94,17 @@ def main():
         time['Game size (# nodes)'].append(n)
         time['Iteration time (s)'].append(iteration_time(liteefg['times'])[0])
 
-        space[''].append(NOREGRET_GPU)
+        space[''].append(NOREGRET_CUDA)
         space['Game size (# nodes)'].append(n)
-        space['Memory usage (bytes)'].append(noregret_gpu['ru_maxrss'] * 1024)
-        space['CUDA memory usage (bytes)'].append(noregret_gpu['used_bytes'])
-        space[''].append(NOREGRET_CPU)
+        space['Memory usage (bytes)'].append(noregret_cuda['ru_maxrss'] * 1024)
+        space['CUDA memory usage (bytes)'].append(noregret_cuda['used_bytes'])
+        space[''].append(NOREGRET_MKL)
         space['Game size (# nodes)'].append(n)
-        space['Memory usage (bytes)'].append(noregret_cpu['ru_maxrss'] * 1024)
+        space['Memory usage (bytes)'].append(noregret_mkl['ru_maxrss'] * 1024)
+        space['CUDA memory usage (bytes)'].append(None)
+        space[''].append(NOREGRET_FP)
+        space['Game size (# nodes)'].append(n)
+        space['Memory usage (bytes)'].append(noregret_fp['ru_maxrss'] * 1024)
         space['CUDA memory usage (bytes)'].append(None)
         space[''].append(OPEN_SPIEL_CPP)
         space['Game size (# nodes)'].append(n)

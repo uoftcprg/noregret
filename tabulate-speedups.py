@@ -24,7 +24,7 @@ LITEEFG = 'LiteEFG'
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument('noregret_gpu')
+    parser.add_argument('noregret_cuda')
     parser.add_argument('open_spiel_cpp')
     parser.add_argument('liteefg')
     parser.add_argument('count')
@@ -48,19 +48,21 @@ def main():
     data = defaultdict(list)
 
     for game in tqdm(GAMES):
-        noregret_gpu = loads(open(args.noregret_gpu.format(game), 'rb').read())
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
         open_spiel_cpp = loads(
             open(args.open_spiel_cpp.format(game), 'rb').read(),
         )
         liteefg = loads(open(args.liteefg.format(game), 'rb').read())
         count = loads(open(args.count.format(game), 'rb').read())
         n = count['node_count']
-        noregret_gpu = iteration_time(noregret_gpu['times'])[0]
+        noregret_cuda = iteration_time(noregret_cuda['times'])[0]
         open_spiel_cpp = (
             iteration_time(open_spiel_cpp['times'])[0]
-            / noregret_gpu
+            / noregret_cuda
         )
-        liteefg = iteration_time(liteefg['times'])[0] / noregret_gpu
+        liteefg = iteration_time(liteefg['times'])[0] / noregret_cuda
 
         data['Game'].append(GAMES[game])
         data['# nodes'].append(scientific2(n))

@@ -16,7 +16,7 @@ GAMES = {
     'battleship-3x2-2-3': 'Battleship-3x2-2-3',
     'battleship-3x2-22-3': 'Battleship-3x2-22-3',
 }
-NOREGRET_GPU = 'Ours (GPU)'
+NOREGRET_CUDA = 'Ours (GPU)'
 LITEEFG = 'LiteEFG'
 UREG = UnitRegistry()
 
@@ -24,7 +24,7 @@ UREG = UnitRegistry()
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument('noregret_gpu')
+    parser.add_argument('noregret_cuda')
     parser.add_argument('liteefg')
     parser.add_argument('count')
     parser.add_argument('table')
@@ -51,16 +51,18 @@ def main():
     data = defaultdict(list)
 
     for game in tqdm(GAMES):
-        noregret_gpu = loads(open(args.noregret_gpu.format(game), 'rb').read())
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
         liteefg = loads(open(args.liteefg.format(game), 'rb').read())
         count = loads(open(args.count.format(game), 'rb').read())
         n = count['node_count']
-        noregret_gpu = noregret_gpu['setup_time']
+        noregret_cuda = noregret_cuda['setup_time']
         liteefg = liteefg['setup_time']
 
         data['Game'].append(GAMES[game])
         data['# nodes'].append(scientific2(n))
-        data[NOREGRET_GPU].append(time(noregret_gpu))
+        data[NOREGRET_CUDA].append(time(noregret_cuda))
         data[LITEEFG].append(time(liteefg))
 
     df = pd.DataFrame(data)
