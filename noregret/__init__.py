@@ -11,7 +11,6 @@ from noregret.games import (
     matrix_game,
     MultilinearGame,
     NormalFormGame,
-    OpenSpielGame,
     PrisonersDilemma,
     PureCoordination,
     RockPaperScissors,
@@ -41,6 +40,7 @@ from noregret.kernels import (
     MKLKernel,
     Serializable,
 )
+from noregret.open_spiel2 import OpenSpielGame
 from noregret.regret_minimizers import (
     BlumMansour,
     CounterfactualRegretMinimization,
