@@ -11,7 +11,7 @@ from noregret.games.multilinear import (
     TwoPlayerMultilinearGame,
     TwoPlayerZeroSumMultilinearGame,
 )
-from noregret.kernels import Serializable
+from noregret.utilities import Serializable
 
 
 @dataclass

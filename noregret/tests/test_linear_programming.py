@@ -1,5 +1,7 @@
 from unittest import main, TestCase
 
+from pokerkit import KuhnPoker, LeducHoldem
+
 import noregret as nr
 
 
@@ -15,7 +17,32 @@ class LinearProgrammingTestCase(TestCase):
         (nr.to_efg(KER, nr.RockPaperScissorsPlus(KER)), 0),
         (nr.to_efg(KER, nr.RockPaperSuperscissors(KER)), 0),
         (nr.to_efg(KER, nr.OpenSpielGame(KER, 'kuhn_poker')), -1 / 18),
-        (nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')), -0.08560642418),
+        (
+            nr.to_efg(KER, nr.OpenSpielGame(KER, 'leduc_poker')),
+            (
+                -1454920850547486749701863871533
+                / 16995463438839962469905132501930
+            ),
+        ),
+        (nr.to_efg(KER, nr.PokerKitGame(KER, KuhnPoker)), -1 / 18),
+        (
+            nr.PokerKitGame(KER, KuhnPoker).to_extensive_form(KER, False),
+            -1 / 18,
+        ),
+        (
+            nr.to_efg(KER, nr.PokerKitGame(KER, LeducHoldem)),
+            (
+                -1454920850547486749701863871533
+                / 16995463438839962469905132501930
+            ),
+        ),
+        (
+            nr.PokerKitGame(KER, LeducHoldem).to_extensive_form(KER, False),
+            (
+                -1454920850547486749701863871533
+                / 16995463438839962469905132501930
+            ),
+        ),
     )
 
     def test_linear_programming(self):

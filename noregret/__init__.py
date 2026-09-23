@@ -38,9 +38,9 @@ from noregret.kernels import (
     ImportedKernel,
     Kernel,
     MKLKernel,
-    Serializable,
 )
 from noregret.open_spiel2 import OpenSpielGame
+from noregret.pokerkit2 import PokerKitGame
 from noregret.regret_minimizers import (
     BlumMansour,
     CounterfactualRegretMinimization,
@@ -71,7 +71,12 @@ from noregret.solvers import (
     stochastic_regret_minimization,
     symmetric_regret_minimization,
 )
-from noregret.utilities import import_object, tuple_or_none, Wrapper
+from noregret.utilities import (
+    import_object,
+    Serializable,
+    tuple_or_none,
+    Wrapper,
+)
 
 BM = BlumMansour
 """Alias for :class:`noregret.BlumMansour`."""
@@ -190,6 +195,7 @@ __all__ = (
     'OGD',
     'OnlineGradientDescent',
     'OpenSpielGame',
+    'PokerKitGame',
     'PrisonersDilemma',
     'ProbabilitySimplexRegretMinimizer',
     'ProbabilitySimplexSwapRegretMinimizer',

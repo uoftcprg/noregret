@@ -9,6 +9,7 @@ open-spiel~=1.6.14
 ordered-set~=4.1.0
 orjson~=3.11.9
 pandas~=3.0.3
+pokerkit~=0.7.7.dev0
 scipy~=1.17.1
 seaborn~=0.13.2
 sparse_dot_mkl~=0.9.10

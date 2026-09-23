@@ -151,6 +151,14 @@ class SequenceFormPolytope:
         """
         return len(self.non_empty_sequences) + 1
 
+    def sequence(self, column):
+        """Return the corresponding sequence of a given column.
+
+        :param column: Column.
+        :return: Corresponding sequence.
+        """
+        return self.non_empty_sequences[column - 1] if column else None
+
     def row(self, decision_point):
         """Return the corresponding row of a given decision point in the
         constraint matrix.
