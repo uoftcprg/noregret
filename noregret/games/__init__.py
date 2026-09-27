@@ -9,7 +9,6 @@ from noregret.games.black_box import (
 )
 from noregret.games.extensive_form import (
     ExtensiveFormGame,
-    to_extensive_form_game,
     TwoPlayerExtensiveFormGame,
     TwoPlayerZeroSumExtensiveFormGame,
 )
@@ -36,6 +35,7 @@ from noregret.games.normal_form import (
     TwoPlayerNormalFormGame,
     TwoPlayerZeroSumNormalFormGame,
 )
+from noregret.games.utilities import to_extensive_form_game
 
 __all__ = (
     'AssuranceGame',

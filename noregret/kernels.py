@@ -1,5 +1,5 @@
 """Module for kernels."""
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, field, KW_ONLY
 from typing import Any
 
@@ -154,24 +154,3 @@ class CUDAKernel(ImportedKernel):
 
         scipy = self.scipy
         scipy.sparse.csr_array = scipy.sparse.csr_matrix
-
-
-class Serializable(ABC):
-    """Abstract base class for serializable objects."""
-
-    @classmethod
-    @abstractmethod
-    def loads(cls, kernel, raw_data):
-        """Load with kernel.
-
-        :param kernel: Kernel.
-        :param raw_data: Raw data.
-        :return: Loaded data.
-        """
-
-    @abstractmethod
-    def dumps(self):
-        """Dump data.
-
-        :return: Dumped data.
-        """

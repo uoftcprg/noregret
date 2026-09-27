@@ -1,5 +1,43 @@
 """Module for utilities."""
+from abc import ABC, abstractmethod
 from importlib import import_module
+
+
+class Wrapper:
+    """Class for wrappers."""
+
+    def __init__(self, object_, **kwargs):
+        self.__object = object_
+        self.__kwargs = kwargs
+
+    def __getattr__(self, key):
+        if key in self.__kwargs:
+            value = self.__kwargs[key]
+        else:
+            value = getattr(self.__object, key)
+
+        return value
+
+
+class Serializable(ABC):
+    """Abstract base class for serializable objects."""
+
+    @classmethod
+    @abstractmethod
+    def loads(cls, kernel, raw_data):
+        """Load with kernel.
+
+        :param kernel: Kernel.
+        :param raw_data: Raw data.
+        :return: Loaded data.
+        """
+
+    @abstractmethod
+    def dumps(self):
+        """Dump data.
+
+        :return: Dumped data.
+        """
 
 
 def import_object(object_path):
@@ -34,19 +72,3 @@ def tuple_or_none(values):
     :return: Tuple or ``None``.
     """
     return None if values is None else tuple(values)
-
-
-class Wrapper:
-    """Class for wrappers."""
-
-    def __init__(self, object_, **kwargs):
-        self.__object = object_
-        self.__kwargs = kwargs
-
-    def __getattr__(self, key):
-        if key in self.__kwargs:
-            value = self.__kwargs[key]
-        else:
-            value = getattr(self.__object, key)
-
-        return value

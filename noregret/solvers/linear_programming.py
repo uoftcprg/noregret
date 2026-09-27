@@ -85,6 +85,6 @@ def linear_programming(game, parameters={'OutputFlag': 0}):
     elif isinstance(game, TwoPlayerZeroSumExtensiveFormGame):
         x, y = _lp_2p0s_efg(game, parameters)
     else:
-        raise ValueError('unsupported game type')
+        raise NotImplementedError('unsupported game type')
 
     return x, y
