@@ -27,7 +27,7 @@ def speedup(value):
     if value < 1:
         value = -1 / value
 
-    return f'{value:.1f}' if -100 < value < 100 else scientific(value, 1)
+    return f'{value:.2g}' if -100 < value < 100 else scientific(value, 1)
 
 
 def main():
@@ -36,10 +36,16 @@ def main():
     noregret_cuda = pd.read_csv(args.noregret_cuda)
     noregret_fp = pd.read_csv(args.noregret_fp)
     df['Operation'] = noregret_cuda['Operation']
-    df[NOREGRET_CUDA] = noregret_cuda['Total'].map(time)
-    df[NOREGRET_FP] = noregret_fp['Total'].map(time)
-    raw_speedups = noregret_fp['Total'] / noregret_cuda['Total']
-    df['Speedup'] = raw_speedups.map(speedup)
+    df[NOREGRET_CUDA] = noregret_cuda['Total']
+    df[NOREGRET_FP] = noregret_fp['Total']
+    df.loc[len(df)] = {
+        'Operation': '',
+        NOREGRET_CUDA: noregret_cuda['Total'].sum(),
+        NOREGRET_FP: noregret_fp['Total'].sum(),
+    }
+    df['Speedup'] = (df[NOREGRET_FP] / df[NOREGRET_CUDA]).map(speedup)
+    df[NOREGRET_CUDA] = df[NOREGRET_CUDA].map(time)
+    df[NOREGRET_FP] = df[NOREGRET_FP].map(time)
 
     df.to_latex(args.table)
 
