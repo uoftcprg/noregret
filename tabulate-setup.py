@@ -16,6 +16,9 @@ GAMES = {
     'battleship-3x2-2-3': 'Battleship-3x2-2-3',
     'battleship-3x2-22-3': 'Battleship-3x2-22-3',
 }
+GAMES2 = {
+    'royal-rhode-island-holdem': 'Royal Rhode Island hold\'em',
+}
 NOREGRET_CUDA = 'Ours (GPU)'
 LITEEFG = 'LiteEFG'
 UREG = UnitRegistry()
@@ -64,6 +67,19 @@ def main():
         data['# nodes'].append(scientific2(n))
         data[NOREGRET_CUDA].append(time(noregret_cuda))
         data[LITEEFG].append(time(liteefg))
+
+    for game in tqdm(GAMES2):
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        count = loads(open(args.count.format(game), 'rb').read())
+        n = count['node_count']
+        noregret_cuda = noregret_cuda['setup_time']
+
+        data['Game'].append(GAMES2[game])
+        data['# nodes'].append(scientific2(n))
+        data[NOREGRET_CUDA].append(time(noregret_cuda))
+        data[LITEEFG].append('--')
 
     df = pd.DataFrame(data)
 

@@ -21,6 +21,7 @@ GAMES = (
     'battleship-3x2-2-3',
     'battleship-3x2-22-3',
 )
+GAMES2 = ('royal-rhode-island-holdem',)
 NOREGRET_CUDA = 'Ours (GPU)'
 NOREGRET_MKL = 'Ours (MT-CPU)'
 NOREGRET_FP = 'Ours (ST-CPU)'
@@ -123,6 +124,44 @@ def main():
         space['Memory usage (bytes)'].append(liteefg['ru_maxrss'] * 1024)
         space['CUDA memory usage (bytes)'].append(None)
 
+    for game in tqdm(GAMES2):
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        noregret_mkl = loads(open(args.noregret_mkl.format(game), 'rb').read())
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
+        count = loads(open(args.count.format(game), 'rb').read())
+        n = count['node_count']
+
+        time[''].append(NOREGRET_CUDA)
+        time['Game size (# nodes)'].append(n)
+        time['Iteration time (s)'].append(
+            iteration_time(noregret_cuda['times'])[0],
+        )
+        time[''].append(NOREGRET_MKL)
+        time['Game size (# nodes)'].append(n)
+        time['Iteration time (s)'].append(
+            iteration_time(noregret_mkl['times'])[0],
+        )
+        time[''].append(NOREGRET_FP)
+        time['Game size (# nodes)'].append(n)
+        time['Iteration time (s)'].append(
+            iteration_time(noregret_fp['times'])[0],
+        )
+
+        space[''].append(NOREGRET_CUDA)
+        space['Game size (# nodes)'].append(n)
+        space['Memory usage (bytes)'].append(noregret_cuda['ru_maxrss'] * 1024)
+        space['CUDA memory usage (bytes)'].append(noregret_cuda['used_bytes'])
+        space[''].append(NOREGRET_MKL)
+        space['Game size (# nodes)'].append(n)
+        space['Memory usage (bytes)'].append(noregret_mkl['ru_maxrss'] * 1024)
+        space['CUDA memory usage (bytes)'].append(None)
+        space[''].append(NOREGRET_FP)
+        space['Game size (# nodes)'].append(n)
+        space['Memory usage (bytes)'].append(noregret_fp['ru_maxrss'] * 1024)
+        space['CUDA memory usage (bytes)'].append(None)
+
     fig, axes = plt.subplots(ROW_COUNT, COLUMN_COUNT, figsize=FIGURE_SIZE)
     axes = axes.flatten()
 
@@ -166,18 +205,13 @@ def main():
     axes[2].set_yscale('log')
     axes[2].set_title('CUDA memory usage')
 
-    legend_handles, legend_labels = axes[2].get_legend_handles_labels()
+    handles, labels = axes[2].get_legend_handles_labels()
 
     axes[2].get_legend().remove()
-    sns.set_context('talk')
-    axes[3].axis('off')
-    axes[3].legend(
-        legend_handles,
-        legend_labels,
-        loc='center',
-        frameon=False,
-    )
     fig.tight_layout()
+    axes[3].axis('off')
+    sns.set_context('talk')
+    axes[3].legend(handles, labels, loc='center', frameon=False)
 
     for figure in args.figures:
         fig.savefig(figure)

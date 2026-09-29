@@ -7,7 +7,7 @@ This branch contains benchmark scripts and results for NoRegret.
 Run scripts.
 
 ```console
-./count.sh
+./serialize.sh
 ./solve.sh
 ./plot.sh
 ./tabulate.sh

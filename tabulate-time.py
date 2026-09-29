@@ -18,6 +18,9 @@ GAMES = {
     'battleship-3x2-2-3': 'Battleship-3x2-2-3',
     'battleship-3x2-22-3': 'Battleship-3x2-22-3',
 }
+GAMES2 = {
+    'royal-rhode-island-holdem': 'Royal Rhode Island hold\'em',
+}
 NOREGRET_CUDA = 'Ours (GPU)'
 NOREGRET_MKL = 'Ours (MT-CPU)'
 NOREGRET_FP = 'Ours (ST-CPU)'
@@ -78,6 +81,23 @@ def main():
             time(*iteration_time(open_spiel_python['times'])),
         )
         data[LITEEFG].append(time(*iteration_time(liteefg['times'])))
+
+    for game in tqdm(GAMES2):
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        noregret_mkl = loads(open(args.noregret_mkl.format(game), 'rb').read())
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
+
+        data['Game'].append(GAMES2[game])
+        data[NOREGRET_CUDA].append(
+            time(*iteration_time(noregret_cuda['times'])),
+        )
+        data[NOREGRET_MKL].append(time(*iteration_time(noregret_mkl['times'])))
+        data[NOREGRET_FP].append(time(*iteration_time(noregret_fp['times'])))
+        data[OPEN_SPIEL_CPP].append('--')
+        data[OPEN_SPIEL_PYTHON].append('--')
+        data[LITEEFG].append('--')
 
     df = pd.DataFrame(data)
 

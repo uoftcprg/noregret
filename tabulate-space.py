@@ -15,6 +15,9 @@ GAMES = {
     'battleship-3x2-2-3': 'Battleship-3x2-2-3',
     'battleship-3x2-22-3': 'Battleship-3x2-22-3',
 }
+GAMES2 = {
+    'royal-rhode-island-holdem': 'Royal Rhode Island hold\'em',
+}
 NOREGRET_CUDA = 'Ours (GPU)'
 NOREGRET_MKL = 'Ours (MT-CPU)'
 NOREGRET_FP = 'Ours (ST-CPU)'
@@ -70,6 +73,27 @@ def main():
             naturalsize(open_spiel_python['ru_maxrss'] * 1024),
         )
         data[LITEEFG].append(naturalsize(liteefg['ru_maxrss'] * 1024))
+
+        data['CUDA'].append(naturalsize(noregret_cuda['used_bytes']))
+
+    for game in tqdm(GAMES2):
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        noregret_mkl = loads(open(args.noregret_mkl.format(game), 'rb').read())
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
+
+        data['Game'].append(GAMES2[game])
+        data[NOREGRET_CUDA].append(
+            naturalsize(noregret_cuda['ru_maxrss'] * 1024),
+        )
+        data[NOREGRET_MKL].append(
+            naturalsize(noregret_mkl['ru_maxrss'] * 1024),
+        )
+        data[NOREGRET_FP].append(naturalsize(noregret_fp['ru_maxrss'] * 1024))
+        data[OPEN_SPIEL_CPP].append('--')
+        data[OPEN_SPIEL_PYTHON].append('--')
+        data[LITEEFG].append('--')
 
         data['CUDA'].append(naturalsize(noregret_cuda['used_bytes']))
 

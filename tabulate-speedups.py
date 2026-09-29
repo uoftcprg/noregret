@@ -17,6 +17,9 @@ GAMES = {
     'battleship-3x2-2-3': 'Battleship-3x2-2-3',
     'battleship-3x2-22-3': 'Battleship-3x2-22-3',
 }
+GAMES2 = {
+    'royal-rhode-island-holdem': 'Royal Rhode Island hold\'em',
+}
 OPEN_SPIEL_CPP = 'OpenSpiel (C++)'
 LITEEFG = 'LiteEFG'
 
@@ -68,6 +71,15 @@ def main():
         data['# nodes'].append(scientific2(n))
         data[OPEN_SPIEL_CPP].append(scientific2(open_spiel_cpp))
         data[LITEEFG].append(scientific2(liteefg))
+
+    for game in tqdm(GAMES2):
+        count = loads(open(args.count.format(game), 'rb').read())
+        n = count['node_count']
+
+        data['Game'].append(GAMES2[game])
+        data['# nodes'].append(scientific2(n))
+        data[OPEN_SPIEL_CPP].append('--')
+        data[LITEEFG].append('--')
 
     df = pd.DataFrame(data)
 

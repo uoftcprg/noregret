@@ -24,12 +24,13 @@ def parse_args():
 
 def main():
     args = parse_args()
-    ker = nr.FPKer()
-    game = nr.OpenSpielGame(ker, args.game)
     ker = nr.import_object(args.ker_path)()
 
     initial_time = time()
-    game = nr.to_efg(ker, game)
+
+    with open(args.game, 'rb') as file:
+        game = nr.EFG_2p0s.loads(ker, file.read())
+
     R_type = nr.import_object(args.R_path)
     row_sfp = game.row_sequence_form_polytope
     R_row = R_type(ker, row_sfp)
