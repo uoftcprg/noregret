@@ -20,6 +20,7 @@ GAMES = {
 GAMES2 = {
     'royal-rhode-island-holdem': 'Royal Rhode Island hold\'em',
 }
+NOREGRET_FP = 'Ours (ST-CPU)'
 OPEN_SPIEL_CPP = 'OpenSpiel (C++)'
 LITEEFG = 'LiteEFG'
 
@@ -28,6 +29,7 @@ def parse_args():
     parser = ArgumentParser()
 
     parser.add_argument('noregret_cuda')
+    parser.add_argument('noregret_fp')
     parser.add_argument('open_spiel_cpp')
     parser.add_argument('liteefg')
     parser.add_argument('count')
@@ -54,6 +56,7 @@ def main():
         noregret_cuda = loads(
             open(args.noregret_cuda.format(game), 'rb').read(),
         )
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
         open_spiel_cpp = loads(
             open(args.open_spiel_cpp.format(game), 'rb').read(),
         )
@@ -61,6 +64,7 @@ def main():
         count = loads(open(args.count.format(game), 'rb').read())
         n = count['node_count']
         noregret_cuda = iteration_time(noregret_cuda['times'])[0]
+        noregret_fp = iteration_time(noregret_fp['times'])[0] / noregret_cuda
         open_spiel_cpp = (
             iteration_time(open_spiel_cpp['times'])[0]
             / noregret_cuda
@@ -69,15 +73,23 @@ def main():
 
         data['Game'].append(GAMES[game])
         data['# nodes'].append(scientific2(n))
+        data[NOREGRET_FP].append(scientific2(noregret_fp))
         data[OPEN_SPIEL_CPP].append(scientific2(open_spiel_cpp))
         data[LITEEFG].append(scientific2(liteefg))
 
     for game in tqdm(GAMES2):
+        noregret_cuda = loads(
+            open(args.noregret_cuda.format(game), 'rb').read(),
+        )
+        noregret_fp = loads(open(args.noregret_fp.format(game), 'rb').read())
         count = loads(open(args.count.format(game), 'rb').read())
         n = count['node_count']
+        noregret_cuda = iteration_time(noregret_cuda['times'])[0]
+        noregret_fp = iteration_time(noregret_fp['times'])[0] / noregret_cuda
 
         data['Game'].append(GAMES2[game])
         data['# nodes'].append(scientific2(n))
+        data[NOREGRET_FP].append(scientific2(noregret_fp))
         data[OPEN_SPIEL_CPP].append('--')
         data[LITEEFG].append('--')
 
