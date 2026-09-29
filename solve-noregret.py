@@ -13,6 +13,7 @@ def parse_args():
 
     parser.add_argument('game')
     parser.add_argument('ker_path')
+    parser.add_argument('dtype')
     parser.add_argument('iteration_count', type=int)
     parser.add_argument('data', type=Path)
 
@@ -21,10 +22,11 @@ def parse_args():
 
 def main():
     args = parse_args()
-    ker = nr.FPKer()
-    game = nr.OpenSpielGame(ker, args.game)
-    ker = nr.import_object(args.ker_path)()
-    game = nr.to_efg(ker, game)
+    ker = nr.import_object(args.ker_path)(data_type=args.dtype)
+
+    with open(args.game, 'rb') as file:
+        game = nr.EFG_2p0s.loads(ker, file.read())
+
     row_sfp = game.row_sequence_form_polytope
     R_row = TimedCFR(ker, row_sfp)
     col_sfp = game.column_sequence_form_polytope

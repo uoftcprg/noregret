@@ -38,7 +38,8 @@ def main():
     df['Operation'] = noregret_cuda['Operation']
     df[NOREGRET_CUDA] = noregret_cuda['Total'].map(time)
     df[NOREGRET_FP] = noregret_fp['Total'].map(time)
-    df['Speedup'] = (noregret_fp['Total'] / noregret_cuda['Total']).map(speedup)
+    raw_speedups = noregret_fp['Total'] / noregret_cuda['Total']
+    df['Speedup'] = raw_speedups.map(speedup)
 
     df.to_latex(args.table)
 

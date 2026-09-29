@@ -7,6 +7,7 @@ This branch contains profiling scripts and results for NoRegret.
 Run scripts.
 
 ```console
+./serialize.sh
 ./solve.sh
 ./tabulate.sh
 ```
