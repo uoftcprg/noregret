@@ -13,10 +13,10 @@ dtype = KER.data_type
 A = np.array([[3, 0, -3], [0, 3, -4], [0, 0, 1]], dtype)
 GAME = nr.matrix_game(KER, A)
 PARAMETERS = {
-    'PRM': (nr.RegretMatching, False),
-    'PRM w/alt.': (nr.RegretMatching, True),
-    'PRM+': (nr.RegretMatchingPlus, False),
-    'PRM+ w/alt.': (nr.RegretMatchingPlus, True),
+    'PRM': (nr.RM, False),
+    'PRM w/alt.': (nr.RM, True),
+    'PRM+': (nr.RM_plus, False),
+    'PRM+ w/alt.': (nr.RM_plus, True),
 }
 ITERATION_COUNT = 100000
 
