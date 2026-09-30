@@ -15,6 +15,7 @@ def parse_args():
     parser.add_argument('node_count', type=int)
     parser.add_argument('branching_factor', type=int)
     parser.add_argument('ker_path')
+    parser.add_argument('dtype')
     parser.add_argument('R_path')
     parser.add_argument('iteration_count', type=int)
     parser.add_argument('data', type=Path)
@@ -24,7 +25,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    ker = nr.import_object(args.ker_path)()
+    ker = nr.import_object(args.ker_path)(data_type=args.dtype)
     actions = defaultdict(OrderedSet)
     parent_sequences = {0: None}
 
@@ -60,6 +61,7 @@ def main():
         'node_count': args.node_count,
         'branching_factor': args.branching_factor,
         'ker_path': args.ker_path,
+        'dtype': args.dtype,
         'R_path': args.R_path,
         'iteration_count': args.iteration_count,
         'times': times,
