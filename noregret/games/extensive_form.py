@@ -81,6 +81,34 @@ class ExtensiveFormGame(MultilinearGame, Serializable):
 
         return dumps(data, list)
 
+    def to_behavioral_form(self, strategy_profile):
+        """Convert strategy profile to behavioral-form strategy profile.
+
+        :param strategy_profile: Strategy profile.
+        :return: Behavioral-form strategy profile.
+        """
+        np = self.kernel.numpy
+        dtype = self.kernel.data_type
+
+        if not isinstance(strategy_profile, dict):
+            strategy_profile = strategy_profile.to_behavioral_form()
+
+        for sfp in self.sequence_form_polytopes:
+            values = list(map(strategy_profile.get, sfp.non_empty_sequences))
+
+            yield np.array(values, dtype)
+
+    def to_sequence_form(self, strategy_profile):
+        """Convert strategy profile to sequence-form strategy profile.
+
+        :param strategy_profile: Strategy profile.
+        :return: Sequence-form strategy profile.
+        """
+        sigma = self.to_behavioral_form(strategy_profile)
+
+        for sfp, x in zip(self.sequence_form_polytopes, sigma):
+            yield sfp.to_sequence_form(x)
+
 
 @dataclass
 class TwoPlayerExtensiveFormGame(TwoPlayerMultilinearGame, ExtensiveFormGame):

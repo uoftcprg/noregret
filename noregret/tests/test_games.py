@@ -271,5 +271,46 @@ class BlackBoxGameTestCase(TestCase):
             game.simulate(sigma)
 
 
+class StrategyProfileTestCase(TestCase):
+    KER = nr.FPKer()
+    GAMES = (
+        (nr.OpenSpielGame(KER, 'kuhn_poker'), -1 / 18),
+        (
+            nr.OpenSpielGame(KER, 'leduc_poker'),
+            (
+                -1454920850547486749701863871533
+                / 16995463438839962469905132501930
+            ),
+        ),
+    )
+
+    def test_to_behavioral_form(self):
+        for game, value in self.GAMES:
+            game2 = nr.to_efg(self.KER, game)
+            x, y = nr.lp(game2)
+
+            epsilon = game2.exploitability(x, y)
+            v = game2.expected_row_utility(x, y)
+
+            self.assertAlmostEqual(epsilon, 0)
+            self.assertAlmostEqual(v, value)
+
+            row_sfp = game2.row_sequence_form_polytope
+            column_sfp = game2.column_sequence_form_polytope
+            sigma = nr.SequenceFormStrategyProfile(
+                self.KER,
+                game,
+                (row_sfp.non_empty_sequences, column_sfp.non_empty_sequences),
+                (x, y),
+            )
+            x, y = game2.to_sequence_form(sigma)
+
+            epsilon = game2.exploitability(x, y)
+            v = game2.expected_row_utility(x, y)
+
+            self.assertAlmostEqual(epsilon, 0)
+            self.assertAlmostEqual(v, value)
+
+
 if __name__ == '__main__':
     main()  # pragma: no cover

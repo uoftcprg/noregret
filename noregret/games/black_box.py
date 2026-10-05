@@ -236,6 +236,25 @@ class StrategyProfile(ABC):
     def __call__(self, node):
         pass
 
+    def to_behavioral_form(self):
+        strategy_profile = {}
+        hs = [self.game.root_node]
+
+        while hs:
+            h = hs.pop()
+            A, h_primes = self.game.actions_and_children(h)
+
+            hs.extend(h_primes)
+
+            if self.game.player(h) is not None:
+                j = self.game.information_set(h)
+                ps = self(h)
+
+                for a, p in zip(A, ps):
+                    strategy_profile[j, a] = p
+
+        return strategy_profile
+
 
 @dataclass
 class UniformStrategyProfile(StrategyProfile):
