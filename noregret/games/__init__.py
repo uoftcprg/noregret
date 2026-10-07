@@ -1,4 +1,10 @@
 """Module for games."""
+from noregret.games.abstractions import (
+    Abstraction,
+    ActionAbstraction,
+    EmbeddingAbstraction,
+    RandomActionAbstraction,
+)
 from noregret.games.black_box import (
     BlackBoxGame,
     SequenceFormStrategyProfile,
@@ -38,10 +44,13 @@ from noregret.games.normal_form import (
 from noregret.games.utilities import to_extensive_form_game
 
 __all__ = (
+    'Abstraction',
+    'ActionAbstraction',
     'AssuranceGame',
     'BattleOfTheSexes',
     'BlackBoxGame',
     'Chicken',
+    'EmbeddingAbstraction',
     'ExtensiveFormGame',
     'Game',
     'GiftExchangeGame',
@@ -51,6 +60,7 @@ __all__ = (
     'NormalFormGame',
     'PrisonersDilemma',
     'PureCoordination',
+    'RandomActionAbstraction',
     'RockPaperScissors',
     'RockPaperScissorsPlus',
     'RockPaperSuperscissors',

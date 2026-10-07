@@ -1,9 +1,12 @@
 """Module for ``noregret''."""
 from noregret.games import (
+    Abstraction,
+    ActionAbstraction,
     AssuranceGame,
     BattleOfTheSexes,
     BlackBoxGame,
     Chicken,
+    EmbeddingAbstraction,
     ExtensiveFormGame,
     Game,
     GiftExchangeGame,
@@ -13,6 +16,7 @@ from noregret.games import (
     NormalFormGame,
     PrisonersDilemma,
     PureCoordination,
+    RandomActionAbstraction,
     RockPaperScissors,
     RockPaperScissorsPlus,
     RockPaperSuperscissors,
@@ -142,6 +146,8 @@ to_efg = to_extensive_form_game
 """Alias for :func:`noregret.to_extensive_form_game`."""
 
 __all__ = (
+    'Abstraction',
+    'ActionAbstraction',
     'AssuranceGame',
     'BattleOfTheSexes',
     'BlackBoxGame',
@@ -163,6 +169,7 @@ __all__ = (
     'EFG',
     'EFG_2p',
     'EFG_2p0s',
+    'EmbeddingAbstraction',
     'ER',
     'EuclideanRegularization',
     'ExtensiveFormGame',
@@ -200,6 +207,7 @@ __all__ = (
     'ProbabilitySimplexRegretMinimizer',
     'ProbabilitySimplexSwapRegretMinimizer',
     'PureCoordination',
+    'RandomActionAbstraction',
     'RegretMatching',
     'RegretMatchingPlus',
     'regret_minimization',
