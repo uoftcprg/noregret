@@ -11,10 +11,12 @@ OPEN_SPIEL_GAMES = (
     'kuhn-poker',
     'leduc-poker',
     'liars-dice',
+    'liars-dice-2-4',
     'goofspiel-6',
     'goofspiel-7',
     'battleship-3x2-2-3',
     'battleship-3x2-22-3',
+    'oshi-zumo-7-2-7',
 )
 POKERKIT_PATH = Path(__file__).parent / 'games' / 'pokerkit'
 POKERKIT_GAMES = (

@@ -1,3 +1,5 @@
 examples/games/open-spiel/battleship-3x2-22-3.json filter=lfs diff=lfs merge=lfs -text
 examples/games/open-spiel/goofspiel-7.json filter=lfs diff=lfs merge=lfs -text
+examples/games/open-spiel/liars-dice-2-4.json filter=lfs diff=lfs merge=lfs -text
+examples/games/open-spiel/oshi-zumo-7-2-7.json filter=lfs diff=lfs merge=lfs -text
 examples/games/pokerkit/royal-rhode-island-holdem.json filter=lfs diff=lfs merge=lfs -text

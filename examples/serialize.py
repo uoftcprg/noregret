@@ -12,6 +12,7 @@ OPEN_SPIEL_GAMES = {
     'kuhn-poker': 'kuhn_poker',
     'leduc-poker': 'leduc_poker',
     'liars-dice': 'liars_dice',
+    'liars-dice-2-4': 'liars_dice(numdice=2,dice_sides=4)',
     'goofspiel-6': (
         'turn_based_simultaneous_game('
         'game=goofspiel(imp_info=True,num_cards=6,points_order=descending))'
@@ -36,6 +37,7 @@ OPEN_SPIEL_GAMES = {
         'ship_values=[4;4],'
         'num_shots=3)'
     ),
+    'oshi-zumo-7-2-7': 'turn_based_simultaneous_game(game=oshi_zumo(coins=7,size=2,horizon=7))',
 }
 POKERKIT_PATH = Path(__file__).parent / 'games' / 'pokerkit'
 POKERKIT_GAME_TYPES = {
